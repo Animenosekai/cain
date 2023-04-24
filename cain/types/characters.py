@@ -32,6 +32,8 @@ class Character(Datatype, typing.Generic[*T]):
         # print(FIXED_CASE in args)
         char_range = UNICODE  # by default
         for arg in args:
+            if isinstance(arg, typing.ForwardRef):
+                arg = arg.__forward_arg__
             if arg in (FIXED_CASE, ASCII, UNICODE):
                 char_range = arg
         return char_range
@@ -55,7 +57,7 @@ class Character(Datatype, typing.Generic[*T]):
         if char_range == FIXED_CASE:
             value = value.upper()
             try:
-                return FIXED_CASE_ALPHABET.index(value).to_bytes()
+                return FIXED_CASE_ALPHABET.index(value).to_bytes()  # TODO: should turn into a series of bits instead of creating a whole byte
             except ValueError as exc:
                 raise errors.EncodingError(cls, f"The FixedCase encoding could not encode the character: `{value}`") from exc
         elif char_range == ASCII:
@@ -69,9 +71,10 @@ class Character(Datatype, typing.Generic[*T]):
         if char_range == FIXED_CASE:
             index = int.from_bytes(value[:1])
             case_value = cls.process_case(args)
+            char = FIXED_CASE_ALPHABET[index]
             if case_value == LOWER_CASE:
-                return FIXED_CASE_ALPHABET[index].lower(), value[1:]
-            return FIXED_CASE_ALPHABET[index].upper(), value[1:]
+                return char.lower(), value[1:]
+            return char.upper(), value[1:]
         elif char_range == ASCII:
             return value[:1].decode("ascii"), value[1:]
         else:

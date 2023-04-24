@@ -1,3 +1,9 @@
+"""
+types
+
+Exports all of the natively available datatypes
+"""
+
 import typing
 import cain.model as model
 import cain.errors as errors
@@ -8,6 +14,8 @@ from .binary import Binary
 from .characters import Character
 from .strings import String
 from .arrays import Array
+from .sets import Set
+from .tuples import Tuple
 from .objects import Object
 
 
@@ -23,6 +31,12 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type]) -> 
 
     if issubclass(datatype, model.Datatype):
         return datatype
+
+    if issubclass(datatype, (set)) or datatype is typing.Set:
+        return Set
+
+    if issubclass(datatype, (tuple)) or datatype is typing.Tuple:
+        return Tuple
 
     if issubclass(datatype, (list)) or datatype is typing.List:
         return Array

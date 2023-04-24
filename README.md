@@ -1,2 +1,3 @@
 # cain
- A small data format
+
+ A small yet powerful data format

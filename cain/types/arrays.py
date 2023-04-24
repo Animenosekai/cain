@@ -6,7 +6,7 @@ Defines the Array datatype
 import typing
 
 from cain import errors
-from cain.model import Datatype
+from cain.model import Datatype, Reference
 import cain.types
 
 T = typing.TypeVarTuple("T")
@@ -47,22 +47,60 @@ class Array(Datatype, typing.Generic[*T]):
 
         if types_length != length:
             if types_length != 1:  # everything is of type `types[0]`
-                raise errors.EncodingError(
-                    cls, f"The given number of elements ({length}) is not matching the number of types provided in the model ({types_length})")
-
+                raise errors.EncodingError(cls,
+                                           f"The given number of elements ({length})\
+                                            is not matching the number of types provided in the model ({types_length})")
             # list[int] with [1, 2, 3]
             result = cain.types.Int.encode(length, *args)
-            current_type, type_args = types[0]
+            types = [types[0]] * length
+        else:
+            # list[int, int, int] with [1, 2, 3]
+            result = b""
 
-            for element in value:
-                result += current_type.encode(element, *type_args)
+        # pylint: disable=pointless-string-statement
+        """
+        \x01\x02\x03\x04  \x01\x02\x03\x04\x05 \x01\x02\x03\x03     \x01\x02\x03\x03          \x00\x00\x00\x00 \x00\x01\x02\x03\x04 ...
+        ~~~~~~~~~~~~~~~~ [~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~ ... ~~~~~~~~~~~~~~~~ ...] ... ~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~ ...
+        <  arr length  >  <   # of indices   > < red. ind. #1 >     <   red. data  >          <   end flag   > < unprocessed data   ...
+        """
 
-            return result
+        results_table: dict[bytes, list[int]] = {
+            # data: int(#of_appearance)
+        }
 
-        # list[int, int, int] with [1, 2, 3]
-        result = b""
+        results = []
+
         for index, (current_type, type_args) in enumerate(types):
-            result += current_type.encode(value[index], *type_args)
+            data = current_type.encode(value[index], *type_args)
+
+            try:
+                results_table[data].append(index)
+            except KeyError:
+                results_table[data] = [index]
+
+            results.append(data)
+
+        redundancies_indices = []
+
+        for data, indices in results_table.items():
+            if len(indices) <= 1:
+                continue
+
+            # Adding the indices
+            result += cain.types.Int.encode(len(indices), *args)
+            result += b"".join(cain.types.Int.encode(index, *args) for index in indices)
+            # Adding the data
+            result += data
+            redundancies_indices.extend(indices)
+
+        result += cain.types.Int.encode(0, *args)
+
+        for index, data in enumerate(results):
+            if index in redundancies_indices:
+                continue
+
+            result += data
+
         return result
 
     @classmethod
@@ -74,17 +112,55 @@ class Array(Datatype, typing.Generic[*T]):
 
         if types_length == 1:
             length, value = cain.types.Int.decode(value, *args)
-            current_type, type_args = types[0]
+            types = [types[0]] * length
+        else:
+            length = types_length
 
-            for _ in range(length):
-                result, value = current_type.decode(value, *type_args)
-                results.append(result)
-            return results, value
+        results = [None] * length
 
-        results = []
-        for (current_type, type_args) in types:
-            result, value = current_type.decode(value, *type_args)
-            results.append(result)
+        processed_indices = []
+
+        end_flag = cain.types.Int.encode(0, *args)
+
+        while not value.startswith(end_flag):
+            # getting the number of times it appears in the array
+            redundancy_count, value = cain.types.Int.decode(value, *args)
+
+            current_indices = []
+            for _ in range(redundancy_count):
+                # for each time, get its index
+                index, value = cain.types.Int.decode(value, *args)
+                current_indices.append(index)
+                processed_indices.append(index)
+
+            # get the actual data, which follows the indices list
+
+            try:
+                index = current_indices[0]
+                current_type, type_args = types[index]
+                data, after_decoding = current_type.decode(value, *type_args)
+                results[index] = data
+            except IndexError:
+                after_decoding = value
+
+            for index in current_indices[1:]:
+                current_type, type_args = types[index]  # could produce the same bytes while being two different datatypes
+                data, _ = current_type.decode(value, *type_args)
+                results[index] = data
+
+            value = after_decoding
+
+            continue
+
+        value = value.removeprefix(end_flag)
+
+        for index, (current_type, type_args) in enumerate(types):
+            if index in processed_indices:
+                continue
+            # if not already processed, then decode the actual value and add it
+            data, value = current_type.decode(value, *type_args)
+            results[index] = data
+
         return results, value
 
 

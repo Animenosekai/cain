@@ -109,3 +109,12 @@ class Datatype:
 
     def __str__(self) -> str:
         return str(self.value)
+
+
+class Reference:
+    """
+    A mutable reference to a data
+    """
+
+    def __init__(self, data: bytes) -> None:
+        self.data = data

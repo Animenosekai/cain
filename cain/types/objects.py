@@ -9,7 +9,7 @@ import cain.types
 from cain.model import Datatype
 
 
-class Object(Datatype):
+class Object(Datatype, dict):
     """
     A basic object to hold multiple values
 
@@ -32,6 +32,17 @@ class Object(Datatype):
             value.update(element)
         value.update(kwargs)
         super().__init__(value)
+
+    def __getattribute__(self, name: str) -> typing.Any:
+        # TODO: Make this at the `Datatype` level ?
+        # TODO: Datatype.__getattribute__ doesn't work
+        try:
+            return Datatype.__getattribute__(self, name)
+        except AttributeError:
+            try:
+                return getattr(self.value, name)
+            except AttributeError:
+                return self.value[name]
 
     @classmethod
     def encode(cls, value: dict, *args):

@@ -6,8 +6,7 @@ import json
 
 from nasse.timer import Timer
 
-from cain.types import Object, String
-from cain.types.characters import FIXED_CASE, UPPER_CASE
+from cain.types import Object
 
 TEST = {
     "a": ["Hello world", "Hello world", "Hello world",
@@ -25,7 +24,23 @@ TEST = {
           "Hello world", "Hello world", "Hello world",
           "Hello world", "Hello world", "Hello world",
           "Hello world", "Hello world", "Hello world",
-          "Hello world", "Hello world", "Hello world"]
+          "Hello world", "Hello world", "Hello world"],
+    "b": ["Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world",
+          "Hello world", "Hello world", "Hello world"],
 }
 
 # JSON Encode
@@ -53,6 +68,7 @@ print("-----------")
 class ObjectA(Object):
     """test object A"""
     a: list[str]
+    b: list[str]
 
 
 a = ObjectA(TEST)

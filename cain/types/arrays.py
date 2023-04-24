@@ -82,8 +82,11 @@ class Array(Datatype, typing.Generic[*T]):
 
         redundancies_indices = []
 
+        integer_length = len(cain.types.Int.encode(0, *args))
+
         for data, indices in results_table.items():
-            if len(indices) <= 1:
+            if len(indices) <= 1 or len(data) <= integer_length:
+                # if there is only one occurence or it's not worth it
                 continue
 
             # Adding the indices

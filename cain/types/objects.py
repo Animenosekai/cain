@@ -44,28 +44,119 @@ class Object(Datatype, dict):
             except AttributeError:
                 return self.value[name]
 
+    @staticmethod
+    def process_type(type):
+        try:
+            args = [arg.__forward_arg__ if isinstance(arg, typing.ForwardRef) else arg for arg in typing.get_args(type)]
+        except Exception:
+            args = ()
+        return cain.types.retrieve_type(type), args
+
     @classmethod
     def encode(cls, value: dict, *args):
-        data = b""
-        for key in sorted(cls.__annotations__.keys()):
-            current_type = cls.__annotations__[key]
+        result = b""
+
+        types = sorted(cls.__annotations__.items(), key=lambda item: item[0])
+
+        # pylint: disable=pointless-string-statement
+        """
+        \x01\x02\x03\x04  \x01\x02\x03\x04\x05 \x01\x02\x03\x03     \x01\x02\x03\x03          \x00\x00\x00\x00 \x00\x01\x02\x03\x04 ...
+        ~~~~~~~~~~~~~~~~ [~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~ ... ~~~~~~~~~~~~~~~~ ...] ... ~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~ ...
+        <  arr length  >  <   # of indices   > < red. ind. #1 >     <   red. data  >          <   end flag   > < unprocessed data   ...
+        """
+
+        results_table: dict[bytes, list[int]] = {
+            # data: int(#of_appearance)
+        }
+
+        results = []
+
+        for index, (key, current_type) in enumerate(types):
+            current_type, type_args = cls.process_type(current_type)
+            data = current_type.encode(value[key], *type_args)
+
             try:
-                args = [arg.__forward_arg__ if isinstance(arg, typing.ForwardRef) else arg for arg in typing.get_args(current_type)]
-            except Exception:
-                args = ()
-            data += cain.types.retrieve_type(current_type).encode(value[key], *args)
-            # KeyError if forgetting a value
-        return data
+                results_table[data].append(index)
+            except KeyError:
+                results_table[data] = [index]
+
+            results.append(data)
+
+        redundancies_indices = []
+
+        integer_length = len(cain.types.Int.encode(0, *args))
+
+        for data, indices in results_table.items():
+            if len(indices) <= 1 or len(data) <= integer_length:
+                # if there is only one occurence or it's not worth it
+                continue
+
+            # Adding the indices
+            result += cain.types.Int.encode(len(indices), *args)
+            result += b"".join(cain.types.Int.encode(index, *args) for index in indices)
+            # Adding the data
+            result += data
+            redundancies_indices.extend(indices)
+
+        result += cain.types.Int.encode(0, *args)
+
+        for index, data in enumerate(results):
+            if index in redundancies_indices:
+                continue
+
+            result += data
+
+        return result
 
     @classmethod
     def decode(cls, value: bytes, *args):
-        data = {}
-        for key in sorted(cls.__annotations__.keys()):
-            current_type = cls.__annotations__[key]
+        results = {}
+        types = sorted(cls.__annotations__.items(), key=lambda item: item[0])
+
+        processed_indices = []
+
+        end_flag = cain.types.Int.encode(0, *args)
+
+        while not value.startswith(end_flag):
+            # getting the number of times it appears in the array
+            redundancy_count, value = cain.types.Int.decode(value, *args)
+
+            current_indices = []
+            for _ in range(redundancy_count):
+                # for each time, get its index
+                index, value = cain.types.Int.decode(value, *args)
+                current_indices.append(index)
+                processed_indices.append(index)
+
+            # get the actual data, which follows the indices list
+
             try:
-                args = typing.get_args(current_type)
-            except Exception:
-                args = ()
-            current_val, value = cain.types.retrieve_type(current_type).decode(value, *args)
-            data[key] = current_val
-        return data, value
+                index = current_indices[0]
+                key, current_type = types[index]
+                current_type, type_args = cls.process_type(current_type)
+                data, after_decoding = current_type.decode(value, *type_args)
+                results[key] = data
+            except IndexError:
+                after_decoding = value
+
+            for index in current_indices[1:]:
+                key, current_type = types[index]  # could produce the same bytes while being two different datatypes
+                current_type, type_args = cls.process_type(current_type)
+                data, _ = current_type.decode(value, *type_args)
+                results[key] = data
+
+            value = after_decoding
+
+            continue
+
+        value = value.removeprefix(end_flag)
+
+        for index, (key, current_type) in enumerate(types):
+            if index in processed_indices:
+                continue
+            # if not already processed, then decode the actual value and add it
+            current_type, type_args = cls.process_type(current_type)
+            data, value = current_type.decode(value, *type_args)
+            results[key] = data
+
+        return results, value

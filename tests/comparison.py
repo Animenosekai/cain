@@ -1,5 +1,5 @@
 """
-Testing the difference between JSON and Cainƒ
+Testing the difference between JSON and Cain
 """
 
 import json
@@ -38,6 +38,7 @@ with Timer() as t:
 json_decoded_time = t.time_ns
 print(f"JSON decode time: {json_decoded_time}ns")
 print("JSON decode results:", json_decoded)
+print("Original equality?", TEST == json_decoded)
 
 print()
 print("CAIN Encode")
@@ -74,6 +75,7 @@ with Timer() as t:
 cain_decoded_time = t.time_ns
 print(f"CAIN decode time: {cain_decoded_time}ns ({round(((cain_decoded_time / json_decoded_time)) * 100, 2)}%)")
 print("CAIN decode results:", cain_decoded)
+print("Original equality?", TEST == cain_decoded)
 
 print()
 print("Comparisons")

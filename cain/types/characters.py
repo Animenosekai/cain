@@ -45,6 +45,8 @@ class Character(Datatype, typing.Generic[*T]):
         """
         case_value = lower_case  # by default
         for arg in args:
+            if isinstance(arg, typing.ForwardRef):
+                arg = arg.__forward_arg__
             if arg in (LOWER_CASE, UPPER_CASE):
                 case_value = arg
         return case_value

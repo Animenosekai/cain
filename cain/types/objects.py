@@ -44,17 +44,6 @@ class Object(Datatype, dict):
             except AttributeError:
                 return self.value[name]
 
-    @staticmethod
-    def process_type(type):
-        """
-        Processes the given type to return the proper datatype and type args
-        """
-        try:
-            args = [arg.__forward_arg__ if isinstance(arg, typing.ForwardRef) else arg for arg in typing.get_args(type)]
-        except Exception:
-            args = ()
-        return cain.types.retrieve_type(type), args
-
     @classmethod
     def encode(cls, value: dict, *args):
         result = b""
@@ -75,7 +64,7 @@ class Object(Datatype, dict):
         results = []
 
         for index, (key, current_type) in enumerate(types):
-            current_type, type_args = cls.process_type(current_type)
+            current_type, type_args = cain.types.retrieve_type(current_type)
             data = current_type.encode(value[key], *type_args)
 
             try:
@@ -142,7 +131,7 @@ class Object(Datatype, dict):
             try:
                 index = current_indices[0]
                 key, current_type = types[index]
-                current_type, type_args = cls.process_type(current_type)
+                current_type, type_args = cain.types.retrieve_type(current_type)
                 data, after_decoding = current_type.decode(value, *type_args)
                 results[key] = data
             except IndexError:
@@ -150,7 +139,7 @@ class Object(Datatype, dict):
 
             for index in current_indices[1:]:
                 key, current_type = types[index]  # could produce the same bytes while being two different datatypes
-                current_type, type_args = cls.process_type(current_type)
+                current_type, type_args = cain.types.retrieve_type(current_type)
                 data, _ = current_type.decode(value, *type_args)
                 results[key] = data
 
@@ -162,7 +151,7 @@ class Object(Datatype, dict):
             if index in processed_indices:
                 continue
             # if not already processed, then decode the actual value and add it
-            current_type, type_args = cls.process_type(current_type)
+            current_type, type_args = cain.types.retrieve_type(current_type)
             data, value = current_type.decode(value, *type_args)
             results[key] = data
 

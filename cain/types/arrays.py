@@ -25,13 +25,7 @@ class Array(Datatype, typing.Generic[*T]):
         results = []
         for arg in args:
             try:
-                current_type = cain.types.retrieve_type(arg)
-                try:
-                    current_type_args = [current_type_arg.__forward_arg__
-                                         if isinstance(current_type_arg, typing.ForwardRef) else current_type_arg
-                                         for current_type_arg in typing.get_args(arg)]
-                except Exception:
-                    current_type_args = []
+                current_type, current_type_args = cain.types.retrieve_type(arg)
                 results.append((current_type, current_type_args))
             except (errors.UnknownTypeError, TypeError):
                 continue

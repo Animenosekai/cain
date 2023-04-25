@@ -3,7 +3,7 @@ Testing the difference between JSON and Cain
 """
 
 import json
-
+import typing
 from nasse.timer import Timer
 
 from cain.types import Object, String
@@ -19,7 +19,12 @@ TEST = {
         "h": "HELLO WORLD",
         "i": "Hi!",
         "j": [1, 2, 3],
-        "k": (1, "hello", True)
+        "k": (1, "hello", True),
+        "l": None,
+        "m": "Yay",
+        "n": "Hi",
+        "o": 2,
+        "p": None
     }
 }
 
@@ -55,6 +60,11 @@ class ObjectA(Object):
         i: str
         j: list[int]
         k: tuple[int, str, bool]
+        l: typing.Optional[str]
+        m: typing.Optional[str]
+        n: typing.Union[str, int]
+        o: typing.Union[str, int]
+        p: None
 
     b: int
     c: float

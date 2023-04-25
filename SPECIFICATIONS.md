@@ -49,11 +49,11 @@ Storage with smaller formats also means a smaller need to allocate resources for
 
 ## General Idea
 
-While formats such as `JSON` and `XML` have big overheads, aiming at both human and machine readable values, most of the time, the data will only be used within a single software are between two softwares, without even being shown once to the end user. Why bother having the human readable part for those use cases ?
+While formats such as `JSON` and `XML` have big overheads, aiming at both human and machine readable values, most of the time, the data will only be used within a single software or two, without even being shown once to the end user. Why bother having the human readable part for those use cases ?
 
 Moreover, most data has and should have a fixed schema, which leverages the need to repeat it in the formatted value at the end.
 
-Finally, some data might be redundant and used mutiple times throughout the same file. References can avoid this by simply writing the data once and reference to it in the right fields. While this might be avoided with JSON using compression algorithms (which should definitely be used), this helps reduce uncompressed sizes, for browsers which don't support some compression algorithms yet, use cases outside of web development and performance critical environments.
+Finally, some data might be redundant and used mutiple times throughout the same file. References can avoid this by simply writing the data once and reference to it in the right fields. While this might be avoided with JSON using compression algorithms (which should definitely be used), this helps reduce uncompressed sizes, for browsers which don't support some compression algorithms yet, use cases outside of web development and size critical environments.
 
 This format aims at bringing the smallest data formatting possible for machine-to-machine communications by avoiding any redundancy and unnecessary syntax.
 

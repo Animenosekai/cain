@@ -46,6 +46,9 @@ class Object(Datatype, dict):
 
     @staticmethod
     def process_type(type):
+        """
+        Processes the given type to return the proper datatype and type args
+        """
         try:
             args = [arg.__forward_arg__ if isinstance(arg, typing.ForwardRef) else arg for arg in typing.get_args(type)]
         except Exception:
@@ -86,19 +89,25 @@ class Object(Datatype, dict):
 
         integer_length = len(cain.types.Int.encode(0, *args))
 
+        redundancies_count = 0
+
+        redundancies_result = b""
+
         for data, indices in results_table.items():
             if len(indices) <= 1 or len(data) <= integer_length:
                 # if there is only one occurence or it's not worth it
                 continue
+            redundancies_count += 1
 
             # Adding the indices
-            result += cain.types.Int.encode(len(indices), *args)
-            result += b"".join(cain.types.Int.encode(index, *args) for index in indices)
+            redundancies_result += cain.types.Int.encode(len(indices), *args)
+            redundancies_result += b"".join(cain.types.Int.encode(index, *args) for index in indices)
             # Adding the data
-            result += data
+            redundancies_result += data
             redundancies_indices.extend(indices)
 
-        result += cain.types.Int.encode(0, *args)
+        result += cain.types.Int.encode(redundancies_count, *args)
+        result += redundancies_result
 
         for index, data in enumerate(results):
             if index in redundancies_indices:
@@ -115,9 +124,9 @@ class Object(Datatype, dict):
 
         processed_indices = []
 
-        end_flag = cain.types.Int.encode(0, *args)
+        redundancy_header_length, value = cain.types.Int.decode(value, *args)
 
-        while not value.startswith(end_flag):
+        for _ in range(redundancy_header_length):
             # getting the number of times it appears in the array
             redundancy_count, value = cain.types.Int.decode(value, *args)
 
@@ -148,8 +157,6 @@ class Object(Datatype, dict):
             value = after_decoding
 
             continue
-
-        value = value.removeprefix(end_flag)
 
         for index, (key, current_type) in enumerate(types):
             if index in processed_indices:

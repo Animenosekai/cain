@@ -25,7 +25,8 @@ TEST = {
           "Hello world", "Hello world", "Hello world",
           "Hello world", "Hello world", "Hello world",
           "Hello world", "Hello world", "Hello world"],
-    "b": ["Hello world", "Hello world", "Hello world",
+    "b": ["Hi"],
+    "c": ["Hello world", "Hello world", "Hello world",
           "Hello world", "Hello world", "Hello world",
           "Hello world", "Hello world", "Hello world",
           "Hello world", "Hello world", "Hello world",
@@ -41,6 +42,7 @@ TEST = {
           "Hello world", "Hello world", "Hello world",
           "Hello world", "Hello world", "Hello world",
           "Hello world", "Hello world", "Hello world"],
+    "d": ["Yay"]
 }
 
 # JSON Encode
@@ -69,6 +71,8 @@ class ObjectA(Object):
     """test object A"""
     a: list[str]
     b: list[str]
+    c: list[str]
+    d: list[str]
 
 
 a = ObjectA(TEST)

@@ -45,15 +45,15 @@ class Array(Datatype, typing.Generic[*T]):
         types_length = len(types)
         length = len(value)
 
-        if types_length != length:
-            if types_length != 1:  # everything is of type `types[0]`
-                raise errors.EncodingError(cls,
-                                           f"The given number of elements ({length})\
-                                            is not matching the number of types provided in the model ({types_length})")
+        if types_length == 1:
             # list[int] with [1, 2, 3]
             result = cain.types.Int.encode(length, *args)
             types = [types[0]] * length
         else:
+            if types_length != length:
+                raise errors.EncodingError(cls,
+                                           f"The given number of elements ({length})\
+                                            is not matching the number of types provided in the model ({types_length})")
             # list[int, int, int] with [1, 2, 3]
             result = b""
 
@@ -80,28 +80,30 @@ class Array(Datatype, typing.Generic[*T]):
 
             results.append(data)
 
-        redundancies_indices = []
-
         integer_length = len(cain.types.Int.encode(0, *args))
 
+        redundancies_count = 0
+        redundancies_result = b""
+        redundancies_indices = []
         for data, indices in results_table.items():
             if len(indices) <= 1 or len(data) <= integer_length:
                 # if there is only one occurence or it's not worth it
                 continue
+            redundancies_count += 1
 
             # Adding the indices
-            result += cain.types.Int.encode(len(indices), *args)
-            result += b"".join(cain.types.Int.encode(index, *args) for index in indices)
+            redundancies_result += cain.types.Int.encode(len(indices), *args)
+            redundancies_result += b"".join(cain.types.Int.encode(index, *args) for index in indices)
             # Adding the data
-            result += data
+            redundancies_result += data
             redundancies_indices.extend(indices)
 
-        result += cain.types.Int.encode(0, *args)
+        result += cain.types.Int.encode(redundancies_count, *args)
+        result += redundancies_result
 
         for index, data in enumerate(results):
             if index in redundancies_indices:
                 continue
-
             result += data
 
         return result
@@ -123,9 +125,9 @@ class Array(Datatype, typing.Generic[*T]):
 
         processed_indices = []
 
-        end_flag = cain.types.Int.encode(0, *args)
+        redundancy_header_length, value = cain.types.Int.decode(value, *args)
 
-        while not value.startswith(end_flag):
+        for _ in range(redundancy_header_length):
             # getting the number of times it appears in the array
             redundancy_count, value = cain.types.Int.decode(value, *args)
 
@@ -143,19 +145,17 @@ class Array(Datatype, typing.Generic[*T]):
                 current_type, type_args = types[index]
                 data, after_decoding = current_type.decode(value, *type_args)
                 results[index] = data
+
+                for index in current_indices[1:]:
+                    current_type, type_args = types[index]  # could produce the same bytes while being two different datatypes
+                    data, _ = current_type.decode(value, *type_args)
+                    results[index] = data
+
+                value = after_decoding
             except IndexError:
-                after_decoding = value
-
-            for index in current_indices[1:]:
-                current_type, type_args = types[index]  # could produce the same bytes while being two different datatypes
-                data, _ = current_type.decode(value, *type_args)
-                results[index] = data
-
-            value = after_decoding
+                pass
 
             continue
-
-        value = value.removeprefix(end_flag)
 
         for index, (current_type, type_args) in enumerate(types):
             if index in processed_indices:

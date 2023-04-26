@@ -19,6 +19,7 @@ from .tuples import Tuple
 from .optional import Optional
 from .union import Union
 from .nonetype import NoneType
+from .ranges import Range
 from .objects import Object
 
 
@@ -35,7 +36,6 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type]) -> 
                  for current_type_arg in typing.get_args(datatype)]
 
     if None in type_args or type(None) in type_args:
-        type_args.remove(None)
         return Optional, type_args
 
     datatype = typing.get_origin(datatype) or datatype
@@ -45,6 +45,9 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type]) -> 
 
     if datatype is None:
         return NoneType, type_args
+
+    if issubclass(datatype, (range)):
+        return Range, type_args
 
     if issubclass(datatype, model.Datatype):
         return datatype, type_args

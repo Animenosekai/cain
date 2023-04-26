@@ -2,6 +2,7 @@
 Testing features on Cain
 """
 
+import typing
 from nasse.timer import Timer
 
 from cain.types import Object, String
@@ -18,7 +19,13 @@ TEST = {
         "i": "Hi!",
         "j": [1, 2, 3],
         "k": {1, 2, 3},
-        "l": (1, "hello", True)
+        "l": (1, "hello", True),
+        "m": None,
+        "n": "Yay",
+        "o": "Hi",
+        "p": 2,
+        "q": None,
+        "r": range(1, 10, 2)
     }
 }
 
@@ -37,6 +44,12 @@ class ObjectA(Object):
         j: list[int]
         k: set[int]
         l: tuple[int, str, bool]
+        m: typing.Optional[str]
+        n: typing.Optional[str]
+        o: typing.Union[str, int]
+        p: typing.Union[str, int]
+        q: None
+        r: range
 
     b: int
     c: float

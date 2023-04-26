@@ -18,9 +18,6 @@
     - [Floating Point](#floating-point)
   - [Strings](#strings)
     - [Characters](#characters)
-      - [Fixed Case Characters](#fixed-case-characters)
-      - [Alphanumeric Characters](#alphanumeric-characters)
-      - [ASCII Characters](#ascii-characters)
       - [Unicode Characters](#unicode-characters)
   - [Null](#null)
   - [Arrays](#arrays)
@@ -79,7 +76,9 @@ They generally end with a null `\0` byte.
 
 #### Characters
 
-To optimize the size taken by characters, we can have them encoded different ways.
+<!-- can't use this idea because most languages work on whole bytes and not bit per bit -->
+
+<!-- To optimize the size taken by characters, we can have them encoded different ways.
 
 ##### Fixed Case Characters
 
@@ -97,7 +96,7 @@ We can specify the case for the characters.
 | --------- | ------ | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | --- | --- | --- |
 | Value    | `0`    | `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` | `10` | `11` | `12` | `13` | `14` | `15` | `16` | `17` | `18` | `19` | `20` | `21` | `22` | `23` | `24` | `25` | `26` | `27` | `28` | `29` |
 
-##### ASCII Characters
+##### ASCII Characters -->
 
 ##### Unicode Characters
 

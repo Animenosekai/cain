@@ -7,7 +7,7 @@ import typing
 from nasse.timer import Timer
 
 from cain.types import Object, String
-from cain.types.characters import FIXED_CASE, UPPER_CASE
+# from cain.types.characters import FIXED_CASE, UPPER_CASE
 
 TEST = {
     "b": 3,
@@ -56,7 +56,8 @@ class ObjectA(Object):
         """test object B"""
         f: bool
         # g: bytes
-        h: String[FIXED_CASE, UPPER_CASE]
+        # h: String[FIXED_CASE, UPPER_CASE]
+        h: str
         i: str
         j: list[int]
         k: tuple[int, str, bool]

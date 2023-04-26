@@ -28,12 +28,12 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type]) -> 
     Returns the right datatype
     """
 
-    if isinstance(datatype, model.Datatype):
-        return datatype.__class__
-
     type_args = [current_type_arg.__forward_arg__
                  if isinstance(current_type_arg, typing.ForwardRef) else current_type_arg
                  for current_type_arg in typing.get_args(datatype)]
+
+    if isinstance(datatype, model.Datatype):
+        return datatype.__class__, type_args
 
     if None in type_args or type(None) in type_args:
         return Optional, type_args

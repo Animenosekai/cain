@@ -1,7 +1,23 @@
 """
-sets.py
+nonetype.py
 
-Defines the Set datatype
+Defines the NoneType datatype, which is used to store `None`.
+
+Example
+-------
+>>> from cain.types import NoneType
+>>> n = NoneType(None)
+>>> b.encoded
+b''
+>>> NoneType.encode(None)
+b''
+>>> NoneType.decode(b'')
+None
+
+Structure
+---------
+Nothing is appended, because the value does not change,\
+we only need to know that it is `None`/`null`.
 """
 import typing
 

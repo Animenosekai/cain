@@ -9,13 +9,13 @@ Example
 >>> b = Binary(b"Hello world")
 >>> b.encoded
 b'\x00\x00\x00\x0bHello world'
->>> Binary._encode(b"Hello world")
+>>> Binary.encode(b"Hello world")
 b'\x00\x00\x00\x0bHello world'
->>> Binary._decode(b"\x00\x00\x00\x0bHello world")
+>>> Binary.decode(b"\x00\x00\x00\x0bHello world")
 b'Hello world'
->>> Binary._encode(b"Hello world", "long")
+>>> Binary.encode(b"Hello world", "long")
 b'\x00\x00\x00\x00\x0bHello world'
->>> Binary._decode(b"\x00\x00\x00\x00\x0bHello world", "long")
+>>> Binary.decode(b"\x00\x00\x00\x00\x0bHello world", "long")
 b'Hello world'
 
 Structure

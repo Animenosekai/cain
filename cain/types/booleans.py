@@ -9,9 +9,9 @@ Example
 >>> b = Boolean(True)
 >>> b.encoded
 b'\x01'
->>> Boolean._encode(False)
+>>> Boolean.encode(False)
 b'\x00'
->>> Binary._decode(b'\x01')
+>>> Binary.decode(b'\x01')
 True
 
 Structure
@@ -34,7 +34,7 @@ class Boolean(Datatype):
 
     @classmethod
     def _decode(cls, value: bytes, *args):
-        # could allow for booleans as integers or strings in `args`
+        # could allow for booleans as integers or strings in `args` ?
         if value.startswith(b'\x00'):
             return False, value[1:]
         elif value.startswith(b'\x01'):

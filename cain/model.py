@@ -78,7 +78,8 @@ class Datatype:
         EncodingError
             If the value could not be encoded
         """
-        return cls._encode(value)
+        # print(cls, value)
+        return cls._encode(value, *args)
 
     @property
     def encoded(self) -> bytes:
@@ -109,7 +110,7 @@ class Datatype:
         DecodingError
             If the value could not be decoded
         """
-        data, _ = cls._decode(value)
+        data, _ = cls._decode(value, *args)
         return data
 
     @property

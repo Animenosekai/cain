@@ -1,7 +1,43 @@
 """
 numbers.py
 
-Defines the different number representations.
+Defines the different Number datatypes.
+
+Example
+-------
+>>> from cain.types import Number
+>>> n = Number(3.14)
+>>> n.encoded
+b'\x1f\x85\xebQ\xb8\x1e\t@'
+>>> Number.encode(3.14)
+b'\x1f\x85\xebQ\xb8\x1e\t@'
+>>> Number.decode(b'\x1f\x85\xebQ\xb8\x1e\t@')
+3.14
+>>> from cain.types import Int, Float
+>>> Float.encode(3.14)
+b'\xc3\xf5H@'
+>>> Int.encode(3)
+b'\x00\x03'
+>>> Int.encode(3, "short")
+b'\x03'
+>>> Int.encode(3, "long")
+b'\x00\x00\x03'
+
+Structure
+---------
+Floating point numbers are encoded following IEEE 754.
+They are separated into single precision (`Float`) and double precision (`Double`) numbers.
+
+Integers are encoded by turning them into without using any approximation,
+converting them from base10 to base2.
+
+When using the base `Int` class, you can modulate the range of encodable integers using
+the `short`, `long`, `signed` and `unsigned` parameters.
+
+You can also use the different fixed size classes (`Int64`, `UInt32`, etc.)
+to save time on the arguments processing.
+
+Refer to the different implementations for more information.
 """
 import struct
 import typing

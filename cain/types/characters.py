@@ -1,94 +1,53 @@
 """
 characters.py
 
-Defines the Character datatype
+Defines the Character datatype, which is used to store characters/letters.
+
+Note: `Character` now only uses UTF-8 to encode its characters.
+
+Note: It used to have other encodings, but they were removed because Python does not\
+      support single bit manipulations very well.
+
+Example
+-------
+>>> from cain.types import Character
+>>> c = Character("a")
+>>> a.encoded
+b'a'
+>>> Character.encode("夏")
+b'\xe5\xa4\x8f'
+>>> Character.decode(b'\xe5\xa4\x8f')
+'夏'
+
+Structure
+---------
+From: https://en.wikipedia.org/wiki/UTF-8#Encoding
+
+Chararacter length  |        UTF-8 octet sequence
+--------------------+----------------------------------------
+1 byte character    | 0xxxxxxx
+2 bytes character   | 110xxxxx 10xxxxxx
+3 bytes character   | 1110xxxx 10xxxxxx 10xxxxxx
+4 bytes character   | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+
+The `x` has the actual code point.
 """
-import typing
+
 from cain.model import Datatype
 
-# fixed_case = FIXED_CASE = FixedCase = "fixed_case"
-# ascii = ASCII = Ascii = "ascii"
-# unicode = UNICODE = Unicode = "unicode"
 
-# lower_case = LOWER_CASE = LowerCase = "lower_case"
-# upper_case = UPPER_CASE = UpperCase = "upper_case"
-
-T = typing.TypeVarTuple("T")
-# FIXED_CASE_ALPHABET = ("NULL", *"ABCDEFGHIJKLMNOPQRSTUVWXYZ", *" \n\t")
-
-
-class Character(Datatype, typing.Generic[*T]):
+class Character(Datatype):
     """
     Handles the encoding and decoding of binary blob.
     """
 
-    # @staticmethod
-    # def process_char_range(args):
-    #     """
-    #     Returns the right character range
-    #     """
-    #     # print(args)
-    #     # print(FIXED_CASE in args)
-    #     char_range = UNICODE  # by default
-    #     for arg in args:
-    #         if isinstance(arg, typing.ForwardRef):
-    #             arg = arg.__forward_arg__
-    #         if arg in (FIXED_CASE, ASCII, UNICODE):
-    #             char_range = arg
-    #     return char_range
-
-    # @staticmethod
-    # def process_case(args):
-    #     """
-    #     Returns the right case
-    #     """
-    #     case_value = lower_case  # by default
-    #     for arg in args:
-    #         if isinstance(arg, typing.ForwardRef):
-    #             arg = arg.__forward_arg__
-    #         if arg in (LOWER_CASE, UPPER_CASE):
-    #             case_value = arg
-    #     return case_value
-
     @classmethod
     def _encode(cls, value: str, *args):
-        # length of blob + blob
-        value = value[0]
-        # char_range = cls.process_char_range(args)
-        # if char_range == FIXED_CASE:
-        #     value = value.upper()
-        #     try:
-        #         return FIXED_CASE_ALPHABET.index(value).to_bytes()  # TODO: should turn into a series of bits instead of creating a whole byte
-        #     except ValueError as exc:
-        #         raise errors.EncodingError(cls, f"The FixedCase encoding could not encode the character: `{value}`") from exc
-        # elif char_range == ASCII:
-        #     return value._encode("ascii")
-        # else:
-        #     return value._encode("utf-8")
-        return value.encode("utf-8")
+        return value[0].encode("utf-8")
 
     @classmethod
     def _decode(cls, value: bytes, *args):
-        # char_range = cls.process_char_range(args)
-        # if char_range == FIXED_CASE:
-        #     index = int.from_bytes(value[:1])
-        #     case_value = cls.process_case(args)
-        #     char = FIXED_CASE_ALPHABET[index]
-        #     if case_value == LOWER_CASE:
-        #         return char.lower(), value[1:]
-        #     return char.upper(), value[1:]
-        # elif char_range == ASCII:
-        #     return value[:1]._decode("ascii"), value[1:]
-        # else:
-
-        # From: https://en.wikipedia.org/wiki/UTF-8#Encoding
-        #   Chararacter         |        UTF-8 octet sequence
-        #              length   |              (binary)
-        #   --------------------+----------------------------------------
-        #   1 byte character    | 0xxxxxxx
-        #   2 bytes character   | 110xxxxx 10xxxxxx
-        #   3 bytes character   | 1110xxxx 10xxxxxx 10xxxxxx
-        #   4 bytes character   | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+        # Removing 3 bits at the right of the byte, then checking if it starts with four `1`.
         if value[0] >> 3 == 0b11110:
             bytes_length = 4
         elif value[0] >> 4 == 0b1110:
@@ -97,4 +56,8 @@ class Character(Datatype, typing.Generic[*T]):
             bytes_length = 2
         else:
             bytes_length = 1
+        # I don't actually understand why Unicode is using all of those extra `0`
+        # before giving the codepoints and `10` at the start of each byte.
+        # At least, we might be able to optimize to fit more characters, but it would require making
+        # another standard.
         return value[:bytes_length].decode("utf-8"), value[bytes_length:]

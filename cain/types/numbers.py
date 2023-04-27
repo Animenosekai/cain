@@ -156,11 +156,59 @@ class Int(Number, typing.Generic[*T]):
         return int.from_bytes(value[:size], signed=signed), value[size:]
 
 
+class SignedInt(Int):
+    """
+    Represents a signed integer
+
+    Note: By default, the size of the encoded integers is 2 bytes.
+    Note: This is the same as `Int`, but the sign won't be checked while processing the args.
+    """
+
+    @staticmethod
+    def process_args(args):
+        size = 2
+
+        for arg in args:
+            if arg == LONG:
+                size += 1
+            elif arg == SHORT:
+                size -= 1
+
+        return True, size
+
+
+signedint = SignedInt
+
+
+class UnsignedInt(Int):
+    """
+    Represents a unsigned integer
+
+    Note: By default, the size of the encoded integers is 2 bytes.
+    Note: This is the same as `Int`, but the sign won't be checked while processing the args.
+    """
+
+    @staticmethod
+    def process_args(args):
+        size = 2
+
+        for arg in args:
+            if arg == LONG:
+                size += 1
+            elif arg == SHORT:
+                size -= 1
+
+        return False, size
+
+
+uint = UInt = UnsignedInt
+
+
 class Int8(Int):
     """
-    Represents an 8-bit (1 byte) signed integer
+    Represents an 8-bit(1 byte) signed integer
 
-    Note: Can store numbers in the -128 to 127 range.
+    Note: Can store numbers in the - 128 to 127 range.
     """
 
     @staticmethod
@@ -173,7 +221,7 @@ SignedInt8 = int8_t = int8 = Int8
 
 class UInt8(Int):
     """
-    Represents an 8-bit (1 byte) unsigned integer
+    Represents an 8-bit(1 byte) unsigned integer
 
     Note: Can store numbers in the 0 to 255 range.
     """
@@ -188,9 +236,9 @@ UnsignedInt8 = uint8_t = uint8 = UInt8
 
 class Int16(Int):
     """
-    Represents an 16-bit (2 bytes) signed integer
+    Represents an 16-bit(2 bytes) signed integer
 
-    Note: Can store numbers in the -32,768 to 32,767 range.
+    Note: Can store numbers in the - 32, 768 to 32, 767 range.
     """
 
     @staticmethod
@@ -203,9 +251,9 @@ SignedInt16 = int16_t = int16 = Int16
 
 class UInt16(Int):
     """
-    Represents an 16-bit (2 bytes) unsigned integer
+    Represents an 16-bit(2 bytes) unsigned integer
 
-    Note: Can store numbers in the 0 to 65,535 range.
+    Note: Can store numbers in the 0 to 65, 535 range.
     """
 
     @staticmethod
@@ -218,9 +266,9 @@ UnsignedInt16 = uint16_t = uint16 = UInt16
 
 class Int32(Int):
     """
-    Represents an 32-bit (4 bytes) signed integer
+    Represents an 32-bit(4 bytes) signed integer
 
-    Note: Can store numbers in the -2,147,483,648 to 2,147,483,647 range.
+    Note: Can store numbers in the - 2, 147, 483, 648 to 2, 147, 483, 647 range.
     """
 
     @staticmethod
@@ -233,9 +281,9 @@ SignedInt32 = int32_t = int32 = Int32
 
 class UInt32(Int):
     """
-    Represents an 32-bit (4 bytes) unsigned integer
+    Represents an 32-bit(4 bytes) unsigned integer
 
-    Note: Can store numbers in the 0 to 4,294,967,295 range.
+    Note: Can store numbers in the 0 to 4, 294, 967, 295 range.
     """
 
     @staticmethod
@@ -248,9 +296,9 @@ UnsignedInt32 = uint32_t = uint32 = UInt32
 
 class Int64(Int):
     """
-    Represents an 64-bit (8 bytes) signed integer
+    Represents an 64-bit(8 bytes) signed integer
 
-    Note: Can store numbers in the -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 range.
+    Note: Can store numbers in the - 9, 223, 372, 036, 854, 775, 808 to 9, 223, 372, 036, 854, 775, 807 range.
     """
 
     @staticmethod
@@ -263,9 +311,9 @@ SignedInt64 = int64_t = int64 = Int64
 
 class UInt64(Int):
     """
-    Represents an 64-bit (8 bytes) unsigned integer
+    Represents an 64-bit(8 bytes) unsigned integer
 
-    Note: Can store numbers in the 0 to 18,446,744,073,709,551,615 range.
+    Note: Can store numbers in the 0 to 18, 446, 744, 073, 709, 551, 615 range.
     """
 
     @staticmethod
@@ -285,7 +333,7 @@ def recommended_size(number: int, signed: bool = False) -> typing.Type[Int]:
     number: int
         The integer to encode
     signed: bool, default = False
-        Whether to consider a signed encoder or not. If the value is negative, it will be infered.
+        Whether to consider a signed encoder or not . If the value is negative, it will be infered.
 
     Returns
     -------

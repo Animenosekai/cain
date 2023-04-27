@@ -23,7 +23,7 @@ from .ranges import Range
 from .objects import Object
 
 
-def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type]) -> typing.Tuple[typing.Type[model.Datatype], typing.List[typing.Union[str, typing.Type]]]:
+def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type, model.Datatype]) -> typing.Tuple[typing.Type[model.Datatype], typing.List[typing.Union[str, typing.Type]]]:
     """
     Returns the right datatype
     """
@@ -33,7 +33,7 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type]) -> 
                  for current_type_arg in typing.get_args(datatype)]
 
     if isinstance(datatype, model.Datatype):
-        return datatype.__class__, type_args
+        return datatype.__class__, datatype.args + type_args
 
     if None in type_args or type(None) in type_args:
         return Optional, type_args

@@ -15,8 +15,43 @@ class Datatype:
     decode between Python objects and Cain objects.
     """
 
-    def __init__(self, value: typing.Any) -> None:
+    def __init__(self, value: typing.Any, *args) -> None:
         self.value = value
+        self.args = list(args)
+
+    # When calling an already instantiated object, the __init__ method is called
+    # This happens when we are giving type arguments before using the class.
+    # Example: Datatype[int, str]("hello")
+    def __call__(self, value: typing.Any, *args) -> typing.Self:
+        self.value = value
+        self.args.extend(args)
+        return self
+
+    def __class_getitem__(cls, args):
+        """
+        Called when using giving type arguments to the class.
+
+        Parameters
+        ----------
+        cls: Datatype
+            The actual class which is being instantiated
+        args: tuple[str, type]
+            The arguments passed with the type
+
+        Example
+        -------
+        >>> from cain.model import Datatype
+        >>> Datatype[int, str]("hello")
+        Datatype[int, str]('hello')
+
+        Returns
+        -------
+        Datatype
+            The instantiated class
+        """
+        if not isinstance(args, tuple):
+            args = (args,)
+        return cls(None, *args)
 
     @classmethod
     def _encode(cls, value: typing.Any, *args) -> bytes:
@@ -78,7 +113,6 @@ class Datatype:
         EncodingError
             If the value could not be encoded
         """
-        # print(cls, value)
         return cls._encode(value, *args)
 
     @property
@@ -86,7 +120,7 @@ class Datatype:
         """
         The encoded value
         """
-        return self.encode(self.value)
+        return self.encode(self.value, *self.args)
 
     @classmethod
     def decode(cls, value: bytes, *args) -> typing.Any:
@@ -113,27 +147,16 @@ class Datatype:
         data, _ = cls._decode(value, *args)
         return data
 
-    @property
-    def preview(self) -> str:
-        """
-        Returns a preview of the value
-
-        Example
-        -------
-        >> > a = Datatype(b"Hello, this is a long byte string")
-        >> > a.preview()
-        'Hello...tring'
-        """
-        data = str(self)
-
-        return "{}{}{}".format(
-            data[:5],
-            '.' * max(0, len(data) - 10),
-            data[-5:]
-        )
-
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.preview})"
+        if self.args:
+            args = []
+            for arg in self.args:
+                try:
+                    args.append(arg.__name__)
+                except AttributeError:
+                    args.append(str(arg))
+            return f"{self.__class__.__name__}[{', '.join(args)}]({self.value})"
+        return f"{self.__class__.__name__}({self.value})"
 
     def __str__(self) -> str:
         return str(self.value)

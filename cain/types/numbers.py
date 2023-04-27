@@ -31,11 +31,11 @@ class Number(Datatype):
     """
 
     @classmethod
-    def encode(cls, value: float, *args):
+    def _encode(cls, value: float, *args):
         return struct.pack('d', float(value))
 
     @classmethod
-    def decode(cls, value: bytes, *args):
+    def _decode(cls, value: bytes, *args):
         [val] = struct.unpack('d', value[:8])
         return val, value[8:]
 
@@ -50,11 +50,11 @@ class Float(Number):
     """
 
     @classmethod
-    def encode(cls, value: int, *args):
+    def _encode(cls, value: int, *args):
         return struct.pack('f', float(value))
 
     @classmethod
-    def decode(cls, value: bytes, *args):
+    def _decode(cls, value: bytes, *args):
         [val] = struct.unpack('f', value[:4])
         return val, value[4:]
 
@@ -84,9 +84,9 @@ class Int(Number, typing.Generic[*T]):
     unsigned
         When the sign is not important, the range of encodable numbers is greater
     long
-        Adds 2 bytes to the size of the integer, allowing for greater ranges (can be used multiple times)
+        Adds 1 byte to the size of the integer, allowing for greater ranges (can be used multiple times)
     short
-        Removes 2 bytes from the size of the integer, allowing for smaller ranges (can be used multiple times)
+        Removes 1 byte from the size of the integer, allowing for smaller ranges (can be used multiple times)
     """
 
     @staticmethod
@@ -103,19 +103,19 @@ class Int(Number, typing.Generic[*T]):
             elif arg == UNSIGNED:
                 signed = False
             elif arg == LONG:
-                size += 2
+                size += 1
             elif arg == SHORT:
-                size -= 2
+                size -= 1
 
         return signed, size
 
     @classmethod
-    def encode(cls, value: int, *args):
+    def _encode(cls, value: int, *args):
         signed, size = cls.process_args(args)
         return int(value).to_bytes(size, signed=signed)
 
     @classmethod
-    def decode(cls, value: bytes, *args):
+    def _decode(cls, value: bytes, *args):
         signed, size = cls.process_args(args)
         return int.from_bytes(value[:size], signed=signed), value[size:]
 

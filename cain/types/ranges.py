@@ -17,14 +17,14 @@ class Range(Datatype, typing.Generic[*T]):
     """
 
     @classmethod
-    def encode(cls, value: range, *args):
+    def _encode(cls, value: range, *args):
         args += (numbers.SHORT,)  # start with only 8 bits integers
-        return numbers.Int.encode(value.start, *args) + numbers.Int.encode(value.stop, *args) + numbers.Int.encode(value.step, *args)
+        return numbers.Int._encode(value.start, *args) + numbers.Int._encode(value.stop, *args) + numbers.Int._encode(value.step, *args)
 
     @classmethod
-    def decode(cls, value: bytes, *args):
+    def _decode(cls, value: bytes, *args):
         args += (numbers.SHORT,)  # start with only 8 bits integers
-        start, value = numbers.Int.decode(value, *args)
-        stop, value = numbers.Int.decode(value, *args)
-        step, value = numbers.Int.decode(value, *args)
+        start, value = numbers.Int._decode(value, *args)
+        stop, value = numbers.Int._decode(value, *args)
+        step, value = numbers.Int._decode(value, *args)
         return range(start, stop, step), value

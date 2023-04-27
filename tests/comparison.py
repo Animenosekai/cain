@@ -82,7 +82,7 @@ print(f"CAIN encode time: {cain_encode_time}ns ({round(((cain_encode_time / json
 print("CAIN encode results:", cain_encoded)
 
 with Timer() as t:
-    cain_decoded = a.decoded(cain_encoded)
+    cain_decoded = a.decode(cain_encoded)
 cain_decoded_time = t.time_ns
 print(f"CAIN decode time: {cain_decoded_time}ns ({round(((cain_decoded_time / json_decoded_time)) * 100, 2)}%)")
 print("CAIN decode results:", cain_decoded)

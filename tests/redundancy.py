@@ -50,7 +50,7 @@ print("JSON Encode")
 print("-----------")
 
 with Timer() as t:
-    json_encoded = json.dumps(TEST, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    json_encoded = json.dumps(TEST, separators=(",", ":"), ensure_ascii=False)._encode("utf-8")
 json_encode_time = t.time_ns
 print(f"JSON encode time: {json_encode_time}ns")
 print("JSON encode results:", json_encoded)

@@ -14,9 +14,9 @@ class NoneType(Datatype):
     """
 
     @classmethod
-    def encode(cls, value: typing.Any, *args):
+    def _encode(cls, value: typing.Any, *args):
         return b""
 
     @classmethod
-    def decode(cls, value: bytes, *args):
+    def _decode(cls, value: bytes, *args):
         return None, value

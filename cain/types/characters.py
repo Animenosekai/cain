@@ -51,7 +51,7 @@ class Character(Datatype, typing.Generic[*T]):
     #     return case_value
 
     @classmethod
-    def encode(cls, value: str, *args):
+    def _encode(cls, value: str, *args):
         # length of blob + blob
         value = value[0]
         # char_range = cls.process_char_range(args)
@@ -62,13 +62,13 @@ class Character(Datatype, typing.Generic[*T]):
         #     except ValueError as exc:
         #         raise errors.EncodingError(cls, f"The FixedCase encoding could not encode the character: `{value}`") from exc
         # elif char_range == ASCII:
-        #     return value.encode("ascii")
+        #     return value._encode("ascii")
         # else:
-        #     return value.encode("utf-8")
+        #     return value._encode("utf-8")
         return value.encode("utf-8")
 
     @classmethod
-    def decode(cls, value: bytes, *args):
+    def _decode(cls, value: bytes, *args):
         # char_range = cls.process_char_range(args)
         # if char_range == FIXED_CASE:
         #     index = int.from_bytes(value[:1])
@@ -78,7 +78,7 @@ class Character(Datatype, typing.Generic[*T]):
         #         return char.lower(), value[1:]
         #     return char.upper(), value[1:]
         # elif char_range == ASCII:
-        #     return value[:1].decode("ascii"), value[1:]
+        #     return value[:1]._decode("ascii"), value[1:]
         # else:
 
         # From: https://en.wikipedia.org/wiki/UTF-8#Encoding

@@ -17,10 +17,10 @@ class Set(Datatype, typing.Generic[*T]):
     """
 
     @classmethod
-    def encode(cls, value: set[typing.Any], *args):
-        return Array.encode(value, *args)
+    def _encode(cls, value: set[typing.Any], *args):
+        return Array._encode(value, *args)
 
     @classmethod
-    def decode(cls, value: bytes, *args):
-        data, value = Array.decode(value, *args)
+    def _decode(cls, value: bytes, *args):
+        data, value = Array._decode(value, *args)
         return set(data), value

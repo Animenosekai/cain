@@ -45,7 +45,7 @@ class Object(Datatype, dict):
                 return self.value[name]
 
     @classmethod
-    def encode(cls, value: dict, *args):
+    def _encode(cls, value: dict, *args):
         result = b""
 
         types = sorted(cls.__annotations__.items(), key=lambda item: item[0])
@@ -65,7 +65,7 @@ class Object(Datatype, dict):
 
         for index, (key, current_type) in enumerate(types):
             current_type, type_args = cain.types.retrieve_type(current_type)
-            data = current_type.encode(value[key], *type_args)
+            data = current_type._encode(value[key], *type_args)
 
             try:
                 results_table[data].append(index)
@@ -89,13 +89,13 @@ class Object(Datatype, dict):
             redundancies_count += 1
 
             # Adding the indices
-            redundancies_result += cain.types.Int.encode(len(indices), *args)
-            redundancies_result += b"".join(cain.types.Int.encode(index, *args) for index in indices)
+            redundancies_result += cain.types.Int._encode(len(indices), *args)
+            redundancies_result += b"".join(cain.types.Int._encode(index, *args) for index in indices)
             # Adding the data
             redundancies_result += data
             redundancies_indices.extend(indices)
 
-        result += cain.types.Int.encode(redundancies_count, *args)
+        result += cain.types.Int._encode(redundancies_count, *args)
         result += redundancies_result
 
         for index, data in enumerate(results):
@@ -107,22 +107,22 @@ class Object(Datatype, dict):
         return result
 
     @classmethod
-    def decode(cls, value: bytes, *args):
+    def _decode(cls, value: bytes, *args):
         results = {}
         types = sorted(cls.__annotations__.items(), key=lambda item: item[0])
 
         processed_indices = []
 
-        redundancy_header_length, value = cain.types.Int.decode(value, *args)
+        redundancy_header_length, value = cain.types.Int._decode(value, *args)
 
         for _ in range(redundancy_header_length):
             # getting the number of times it appears in the array
-            redundancy_count, value = cain.types.Int.decode(value, *args)
+            redundancy_count, value = cain.types.Int._decode(value, *args)
 
             current_indices = []
             for _ in range(redundancy_count):
                 # for each time, get its index
-                index, value = cain.types.Int.decode(value, *args)
+                index, value = cain.types.Int._decode(value, *args)
                 current_indices.append(index)
                 processed_indices.append(index)
 
@@ -132,7 +132,7 @@ class Object(Datatype, dict):
                 index = current_indices[0]
                 key, current_type = types[index]
                 current_type, type_args = cain.types.retrieve_type(current_type)
-                data, after_decoding = current_type.decode(value, *type_args)
+                data, after_decoding = current_type._decode(value, *type_args)
                 results[key] = data
             except IndexError:
                 after_decoding = value
@@ -140,7 +140,7 @@ class Object(Datatype, dict):
             for index in current_indices[1:]:
                 key, current_type = types[index]  # could produce the same bytes while being two different datatypes
                 current_type, type_args = cain.types.retrieve_type(current_type)
-                data, _ = current_type.decode(value, *type_args)
+                data, _ = current_type._decode(value, *type_args)
                 results[key] = data
 
             value = after_decoding
@@ -152,7 +152,7 @@ class Object(Datatype, dict):
                 continue
             # if not already processed, then decode the actual value and add it
             current_type, type_args = cain.types.retrieve_type(current_type)
-            data, value = current_type.decode(value, *type_args)
+            data, value = current_type._decode(value, *type_args)
             results[key] = data
 
         return results, value

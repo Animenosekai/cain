@@ -1,10 +1,26 @@
 """
-booleans
+booleans.py
 
+Defines the Boolean datatype, which is used to store boolean values.
 
+Example
+-------
+>>> from cain.types import Boolean
+>>> b = Boolean(True)
+>>> b.encoded
+b'\x01'
+>>> Boolean._encode(False)
+b'\x00'
+>>> Binary._decode(b'\x01')
+True
+
+Structure
+---------
+`\x01` — Represents `True`
+`\x00` — Represents `False`
 """
-from cain.model import Datatype
 from cain import errors
+from cain.model import Datatype
 
 
 class Boolean(Datatype):
@@ -13,11 +29,11 @@ class Boolean(Datatype):
     """
 
     @classmethod
-    def encode(cls, value: int, *args):
+    def _encode(cls, value: int, *args):
         return b'\x01' if value else b'\x00'
 
     @classmethod
-    def decode(cls, value: bytes, *args):
+    def _decode(cls, value: bytes, *args):
         # could allow for booleans as integers or strings in `args`
         if value.startswith(b'\x00'):
             return False, value[1:]

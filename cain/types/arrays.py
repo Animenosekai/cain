@@ -32,7 +32,7 @@ class Array(Datatype, typing.Generic[*T]):
         return results
 
     @classmethod
-    def encode(cls, value: typing.Iterable[typing.Any], *args):
+    def _encode(cls, value: typing.Iterable[typing.Any], *args):
         value = list(value)  # normalize the available methods and fix its indices since the whole operation will eventually be O(n)
 
         types = cls.process_types_args(args)
@@ -41,7 +41,7 @@ class Array(Datatype, typing.Generic[*T]):
 
         if types_length == 1:
             # list[int] with [1, 2, 3]
-            result = cain.types.Int.encode(length, *args)
+            result = cain.types.Int._encode(length, *args)
             types = [types[0]] * length
 
             integer_encoder = cain.types.Int
@@ -69,7 +69,7 @@ class Array(Datatype, typing.Generic[*T]):
         results = []
 
         for index, (current_type, type_args) in enumerate(types):
-            data = current_type.encode(value[index], *type_args)
+            data = current_type._encode(value[index], *type_args)
 
             try:
                 results_table[data].append(index)
@@ -90,13 +90,13 @@ class Array(Datatype, typing.Generic[*T]):
             redundancies_count += 1
 
             # Adding the indices
-            redundancies_result += integer_encoder.encode(len(indices), *args)
-            redundancies_result += b"".join(integer_encoder.encode(index, *args) for index in indices)
+            redundancies_result += integer_encoder._encode(len(indices), *args)
+            redundancies_result += b"".join(integer_encoder._encode(index, *args) for index in indices)
             # Adding the data
             redundancies_result += data
             redundancies_indices.extend(indices)
 
-        result += integer_encoder.encode(redundancies_count, *args)
+        result += integer_encoder._encode(redundancies_count, *args)
         result += redundancies_result
 
         for index, data in enumerate(results):
@@ -107,14 +107,14 @@ class Array(Datatype, typing.Generic[*T]):
         return result
 
     @classmethod
-    def decode(cls, value: bytes, *args):
+    def _decode(cls, value: bytes, *args):
         types = cls.process_types_args(args)
         types_length = len(types)
 
         results = []
 
         if types_length == 1:
-            length, value = cain.types.Int.decode(value, *args)
+            length, value = cain.types.Int._decode(value, *args)
             types = [types[0]] * length
             integer_encoder = cain.types.numbers.Int
         else:
@@ -125,16 +125,16 @@ class Array(Datatype, typing.Generic[*T]):
 
         processed_indices = []
 
-        redundancy_header_length, value = integer_encoder.decode(value, *args)
+        redundancy_header_length, value = integer_encoder._decode(value, *args)
 
         for _ in range(redundancy_header_length):
             # getting the number of times it appears in the array
-            redundancy_count, value = integer_encoder.decode(value, *args)
+            redundancy_count, value = integer_encoder._decode(value, *args)
 
             current_indices = []
             for _ in range(redundancy_count):
                 # for each time, get its index
-                index, value = integer_encoder.decode(value, *args)
+                index, value = integer_encoder._decode(value, *args)
                 current_indices.append(index)
                 processed_indices.append(index)
 
@@ -143,12 +143,12 @@ class Array(Datatype, typing.Generic[*T]):
             try:
                 index = current_indices[0]
                 current_type, type_args = types[index]
-                data, after_decoding = current_type.decode(value, *type_args)
+                data, after_decoding = current_type._decode(value, *type_args)
                 results[index] = data
 
                 for index in current_indices[1:]:
                     current_type, type_args = types[index]  # could produce the same bytes while being two different datatypes
-                    data, _ = current_type.decode(value, *type_args)
+                    data, _ = current_type._decode(value, *type_args)
                     results[index] = data
 
                 value = after_decoding
@@ -161,7 +161,7 @@ class Array(Datatype, typing.Generic[*T]):
             if index in processed_indices:
                 continue
             # if not already processed, then decode the actual value and add it
-            data, value = current_type.decode(value, *type_args)
+            data, value = current_type._decode(value, *type_args)
             results[index] = data
 
         return results, value

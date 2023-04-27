@@ -6,7 +6,7 @@ Defines the Array datatype
 import typing
 
 from cain import errors
-from cain.model import Datatype, Reference
+from cain.model import Datatype
 import cain.types
 
 T = typing.TypeVarTuple("T")

@@ -156,3 +156,6 @@ class Object(Datatype, dict):
             results[key] = data
 
         return results, value
+
+
+Dict = Object

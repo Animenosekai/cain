@@ -76,7 +76,7 @@ class Object(Datatype, dict):
 
         redundancies_indices = []
 
-        integer_length = len(cain.types.Int.encode(0, *args))
+        _, integer_length = cain.types.Int.process_args(args)
 
         redundancies_count = 0
 

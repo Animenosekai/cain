@@ -43,6 +43,8 @@ class Array(Datatype, typing.Generic[*T]):
             # list[int] with [1, 2, 3]
             result = cain.types.Int.encode(length, *args)
             types = [types[0]] * length
+
+            integer_encoder = cain.types.Int
         else:
             if types_length != length:
                 raise errors.EncodingError(cls,
@@ -50,6 +52,8 @@ class Array(Datatype, typing.Generic[*T]):
                                             is not matching the number of types provided in the model ({types_length})")
             # list[int, int, int] with [1, 2, 3]
             result = b""
+
+            integer_encoder = cain.types.numbers.recommended_size(length)
 
         # pylint: disable=pointless-string-statement
         """
@@ -74,7 +78,7 @@ class Array(Datatype, typing.Generic[*T]):
 
             results.append(data)
 
-        integer_length = len(cain.types.Int.encode(0, *args))
+        _, integer_length = integer_encoder.process_args(args)
 
         redundancies_count = 0
         redundancies_result = b""
@@ -86,13 +90,13 @@ class Array(Datatype, typing.Generic[*T]):
             redundancies_count += 1
 
             # Adding the indices
-            redundancies_result += cain.types.Int.encode(len(indices), *args)
-            redundancies_result += b"".join(cain.types.Int.encode(index, *args) for index in indices)
+            redundancies_result += integer_encoder.encode(len(indices), *args)
+            redundancies_result += b"".join(integer_encoder.encode(index, *args) for index in indices)
             # Adding the data
             redundancies_result += data
             redundancies_indices.extend(indices)
 
-        result += cain.types.Int.encode(redundancies_count, *args)
+        result += integer_encoder.encode(redundancies_count, *args)
         result += redundancies_result
 
         for index, data in enumerate(results):
@@ -112,23 +116,25 @@ class Array(Datatype, typing.Generic[*T]):
         if types_length == 1:
             length, value = cain.types.Int.decode(value, *args)
             types = [types[0]] * length
+            integer_encoder = cain.types.numbers.Int
         else:
             length = types_length
+            integer_encoder = cain.types.numbers.recommended_size(length)
 
         results = [None] * length
 
         processed_indices = []
 
-        redundancy_header_length, value = cain.types.Int.decode(value, *args)
+        redundancy_header_length, value = integer_encoder.decode(value, *args)
 
         for _ in range(redundancy_header_length):
             # getting the number of times it appears in the array
-            redundancy_count, value = cain.types.Int.decode(value, *args)
+            redundancy_count, value = integer_encoder.decode(value, *args)
 
             current_indices = []
             for _ in range(redundancy_count):
                 # for each time, get its index
-                index, value = cain.types.Int.decode(value, *args)
+                index, value = integer_encoder.decode(value, *args)
                 current_indices.append(index)
                 processed_indices.append(index)
 

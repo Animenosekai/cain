@@ -39,6 +39,35 @@ class Number(Datatype):
         [val] = struct.unpack('d', value[:8])
         return val, value[8:]
 
+# FLOATING POINT NUMBERS
+
+
+class Float(Number):
+    """
+    Represents a single precision floating point number, encoded with 32 bits (4 bytes).
+
+    The numbers can range from -3.4e38 to 3.4e38
+    """
+
+    @classmethod
+    def encode(cls, value: int, *args):
+        return struct.pack('f', float(value))
+
+    @classmethod
+    def decode(cls, value: bytes, *args):
+        [val] = struct.unpack('f', value[:4])
+        return val, value[4:]
+
+
+class Double(Number):
+    """
+    Represents a double precision floating point number, encoded with 64 bits (8 bytes).
+
+    The numbers can range from -1.7e308 to +1.7e308
+    """
+
+# Integers
+
 
 class Int(Number, typing.Generic[*T]):
     """
@@ -91,26 +120,163 @@ class Int(Number, typing.Generic[*T]):
         return int.from_bytes(value[:size], signed=signed), value[size:]
 
 
-class Double(Number):
+class Int8(Int):
     """
-    Represents a double precision floating point number, encoded with 64 bits (8 bytes).
+    Represents an 8-bit (1 byte) signed integer
 
-    The numbers can range from -1.7e308 to +1.7e308
-    """
-
-
-class Float(Number):
-    """
-    Represents a single precision floating point number, encoded with 32 bits (4 bytes).
-
-    The numbers can range from -3.4e38 to 3.4e38
+    Note: Can store numbers in the -128 to 127 range.
     """
 
-    @classmethod
-    def encode(cls, value: int, *args):
-        return struct.pack('f', float(value))
+    @staticmethod
+    def process_args(args):
+        return True, 1
 
-    @classmethod
-    def decode(cls, value: bytes, *args):
-        [val] = struct.unpack('f', value[:4])
-        return val, value[4:]
+
+SignedInt8 = int8_t = int8 = Int8
+
+
+class UInt8(Int):
+    """
+    Represents an 8-bit (1 byte) unsigned integer
+
+    Note: Can store numbers in the 0 to 255 range.
+    """
+
+    @staticmethod
+    def process_args(args):
+        return False, 1
+
+
+UnsignedInt8 = uint8_t = uint8 = UInt8
+
+
+class Int16(Int):
+    """
+    Represents an 16-bit (2 bytes) signed integer
+
+    Note: Can store numbers in the -32,768 to 32,767 range.
+    """
+
+    @staticmethod
+    def process_args(args):
+        return True, 2
+
+
+SignedInt16 = int16_t = int16 = Int16
+
+
+class UInt16(Int):
+    """
+    Represents an 16-bit (2 bytes) unsigned integer
+
+    Note: Can store numbers in the 0 to 65,535 range.
+    """
+
+    @staticmethod
+    def process_args(args):
+        return False, 2
+
+
+UnsignedInt16 = uint16_t = uint16 = UInt16
+
+
+class Int32(Int):
+    """
+    Represents an 32-bit (4 bytes) signed integer
+
+    Note: Can store numbers in the -2,147,483,648 to 2,147,483,647 range.
+    """
+
+    @staticmethod
+    def process_args(args):
+        return True, 4
+
+
+SignedInt32 = int32_t = int32 = Int32
+
+
+class UInt32(Int):
+    """
+    Represents an 32-bit (4 bytes) unsigned integer
+
+    Note: Can store numbers in the 0 to 4,294,967,295 range.
+    """
+
+    @staticmethod
+    def process_args(args):
+        return False, 2
+
+
+UnsignedInt32 = uint32_t = uint32 = UInt32
+
+
+class Int64(Int):
+    """
+    Represents an 64-bit (8 bytes) signed integer
+
+    Note: Can store numbers in the -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 range.
+    """
+
+    @staticmethod
+    def process_args(args):
+        return True, 8
+
+
+SignedInt64 = int64_t = int64 = Int64
+
+
+class UInt64(Int):
+    """
+    Represents an 64-bit (8 bytes) unsigned integer
+
+    Note: Can store numbers in the 0 to 18,446,744,073,709,551,615 range.
+    """
+
+    @staticmethod
+    def process_args(args):
+        return False, 8
+
+
+UnsignedInt64 = uint64_t = uint64 = UInt64
+
+
+def recommended_size(number: int, signed: bool = False) -> typing.Type[Int]:
+    """
+    Returns the recommended integer encoder for the given number
+
+    Parameters
+    ----------
+    number: int
+        The integer to encode
+    signed: bool, default = False
+        Whether to consider a signed encoder or not. If the value is negative, it will be infered.
+
+    Returns
+    -------
+    Int
+        The encoder to use
+
+    Raises
+    ------
+    ValueError
+        If the given value is too big to be encoded within 8 bytes
+    """
+    if signed or number < 0:
+        if -128 <= number <= 127:
+            return Int8
+        elif -32_768 <= number <= 32_767:
+            return Int16
+        elif -2_147_483_648 <= number <= 2_147_483_647:
+            return Int32
+        elif -9_223_372_036_854_775_808 <= number <= 9_223_372_036_854_775_807:
+            return Int64
+        raise ValueError("The number is too big to be encoded as a signed integer")
+    if number <= 255:
+        return UInt8
+    elif number <= 65_535:
+        return UInt16
+    elif number <= 4_294_967_295:
+        return UInt32
+    elif number <= 18_446_744_073_709_551_615:
+        return UInt64
+    raise ValueError("The number is too big to be encoded as an unsigned integer")

@@ -5,7 +5,6 @@ Defines the Character datatype
 """
 import typing
 from cain.model import Datatype
-from cain import errors
 
 # fixed_case = FIXED_CASE = FixedCase = "fixed_case"
 # ascii = ASCII = Ascii = "ascii"

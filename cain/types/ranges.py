@@ -6,7 +6,7 @@ Defines the Range datatype
 import typing
 
 from cain.model import Datatype
-from cain.types import Int
+import cain.types.numbers as numbers
 
 T = typing.TypeVarTuple("T")
 
@@ -18,11 +18,13 @@ class Range(Datatype, typing.Generic[*T]):
 
     @classmethod
     def encode(cls, value: range, *args):
-        return Int.encode(value.start, *args) + Int.encode(value.stop, *args) + Int.encode(value.step, *args)
+        args += (numbers.SHORT,)  # start with only 8 bits integers
+        return numbers.Int.encode(value.start, *args) + numbers.Int.encode(value.stop, *args) + numbers.Int.encode(value.step, *args)
 
     @classmethod
     def decode(cls, value: bytes, *args):
-        start, value = Int.decode(value, *args)
-        stop, value = Int.decode(value, *args)
-        step, value = Int.decode(value, *args)
+        args += (numbers.SHORT,)  # start with only 8 bits integers
+        start, value = numbers.Int.decode(value, *args)
+        stop, value = numbers.Int.decode(value, *args)
+        step, value = numbers.Int.decode(value, *args)
         return range(start, stop, step), value

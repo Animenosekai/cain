@@ -21,10 +21,11 @@ class Union(Datatype, typing.Generic[*T]):
     @classmethod
     def encode(cls, value: typing.Union[*T], *args):
         current_type, _ = cain.types.retrieve_type(value.__class__)
+        int_encoder = numbers.recommended_size(len(args))
         for index, arg in enumerate(args):
             arg_type, type_args = cain.types.retrieve_type(arg)
             if arg_type == current_type:
-                return numbers.Int.encode(index, *args) + arg_type.encode(value, *type_args)
+                return int_encoder.encode(index, *args) + arg_type.encode(value, *type_args)
         raise errors.EncodingError(cls, "The given element does not seem to be of any type mentionned in the Union")
 
     @classmethod

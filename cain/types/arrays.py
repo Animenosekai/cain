@@ -15,6 +15,17 @@ b'\x00\x04\x00\x01\x00\x02\x00\x00\x00\x02Hello\x00Hi\x00Hey\x00'
 
 Structure
 ---------
+Case 1: Without repetition in the data
+Example: [1, 2, 3]
+
+\x00\x03  \x00\x00   \x00\x01 \x00\x02 \x00\x03
+~~~~~~~~  ~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~
+Array     Number     Rest of data
+Length    of repeats
+
+Case 2: With repetition in the data
+Example: ["Hello", "Hi", "Hello", "Hey"]
+
 \x00\x04   \x00\x01    \x00\x02 \x00\x00 \x00\x02 Hello\x00        Hi\x00 Hey\x00
 ~~~~~~~~   ~~~~~~~~   [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~] * n   ~~~~~~~~~~~~~~
 Array      Number of   Number    Index1   Index2  Repeated         Rest of data
@@ -92,11 +103,12 @@ class Array(Datatype, typing.Generic[*T]):
             try:
                 results_table[data].append(index)
             except KeyError:
-                # the `data` is new
+                # the data is new
                 results_table[data] = [index]
 
             results.append(data)
 
+        # Checking the size of the newly encoded integers because
         # we don't need to mark as a repeated value if it does not help with the end size
         _, integer_length = integer_encoder.process_args(args)
 

@@ -5,6 +5,7 @@ Defines the base classes for data models
 """
 
 import typing
+import copy
 
 from cain import errors
 
@@ -14,18 +15,20 @@ class Datatype:
     Holds a value and the different implementations to encode and
     decode between Python objects and Cain objects.
     """
+    # Holds the different type arguments
+    # Warning: Should only be modified in a copy of the class
+    __args__ = []
+    __annotations__ = {}
 
-    def __init__(self, value: typing.Any, *args) -> None:
+    def __init__(self, value: typing.Any) -> None:
         self.value = value
-        self.args = list(args)
 
-    # When calling an already instantiated object, the __init__ method is called
-    # This happens when we are giving type arguments before using the class.
-    # Example: Datatype[int, str]("hello")
-    def __call__(self, value: typing.Any, *args) -> typing.Self:
-        self.value = value
-        self.args.extend(args)
-        return self
+    # # When calling an already instantiated object, the __init__ method is called
+    # # This happens when we are giving type arguments before using the class.
+    # # Example: Datatype[int, str]("hello")
+    # def __call__(self, value: typing.Any, *args) -> typing.Self:
+    #     self.value = value
+    #     return self
 
     def __class_getitem__(cls, args):
         """
@@ -35,7 +38,7 @@ class Datatype:
         ----------
         cls: Datatype
             The actual class which is being instantiated
-        args: tuple[str, type]
+        args: str | type | dict | tuple[str | type | dict]
             The arguments passed with the type
 
         Example
@@ -51,7 +54,23 @@ class Datatype:
         """
         if not isinstance(args, tuple):
             args = (args,)
-        return cls(None, *args)
+
+        annotations_r = {**cls.__annotations__}
+        args_r = [*cls.__args__]
+
+        for element in args:
+            if isinstance(element, dict):
+                annotations_r.update(element)
+            else:
+                args_r.append(element)
+
+        class NewDatatype(cls):
+            """A subclass containing the type arguments"""
+            __annotations__ = annotations_r
+            __args__ = args_r
+        NewDatatype.__name__ = cls.__name__
+
+        return NewDatatype
 
     @classmethod
     def _encode(cls, value: typing.Any, *args) -> bytes:
@@ -113,14 +132,14 @@ class Datatype:
         EncodingError
             If the value could not be encoded
         """
-        return cls._encode(value, *args)
+        return cls._encode(value, *(*cls.__args__, *args))
 
     @property
     def encoded(self) -> bytes:
         """
         The encoded value
         """
-        return self.encode(self.value, *self.args)
+        return self.encode(self.value)
 
     @classmethod
     def decode(cls, value: bytes, *args) -> typing.Any:
@@ -144,19 +163,42 @@ class Datatype:
         DecodingError
             If the value could not be decoded
         """
-        data, _ = cls._decode(value, *args)
+        data, _ = cls._decode(value, *(*cls.__args__, *args))
         return data
 
     def __repr__(self) -> str:
-        if self.args:
-            args = []
-            for arg in self.args:
+        """
+        Returns a string representation of the object
+
+        Returns
+        -------
+        str
+            The string representation of the object.
+            Example: "Datatype[int, str]('hello')"
+                     "Datatype[int, str](42)"
+                     "Datatype<{'a': int}>"
+                     "Datatype<{'a': int}>({'a': 2})"
+        """
+        result = self.__class__.__name__
+        if self.__annotations__:
+            annotations_r = {}
+            for key, value in self.__annotations__.items():
                 try:
-                    args.append(arg.__name__)
+                    annotations_r[key] = value.__name__
                 except AttributeError:
-                    args.append(str(arg))
-            return f"{self.__class__.__name__}[{', '.join(args)}]({self.value})"
-        return f"{self.__class__.__name__}({self.value})"
+                    annotations_r[key] = str(value)
+            result += f"<{annotations_r}>"
+        if self.__args__:
+            args_r = []
+            for arg in self.__args__:
+                try:
+                    args_r.append(arg.__name__)
+                except AttributeError:
+                    args_r.append(str(arg))
+            result += f"[{', '.join(args_r)}]"
+        if self.value:
+            result += f"({self.value})"
+        return result
 
     def __str__(self) -> str:
         return str(self.value)

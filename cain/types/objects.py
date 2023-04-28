@@ -50,6 +50,7 @@ repeats     of indices                 Data
 Note: Unlike Arrays we don't need to encode the length because it is fixed.
 """
 import typing
+import copy
 
 import cain.types
 from cain.model import Datatype
@@ -71,8 +72,11 @@ class Object(Datatype):
         except AttributeError:
             try:
                 return getattr(self.value, name)
-            except AttributeError:
-                return self.value[name]
+            except AttributeError as err:
+                try:
+                    return self.value[name]
+                except KeyError:
+                    raise err
 
     def __getitem__(self, key: str) -> typing.Any:
         return self.value[key]

@@ -61,6 +61,9 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type, mode
     if issubclass(datatype, (list)) or datatype is typing.List:
         return Array, type_args
 
+    if issubclass(datatype, (dict)) or datatype is typing.Dict:
+        return Object, type_args
+
     if issubclass(datatype, (bool)):
         return Boolean, type_args
 

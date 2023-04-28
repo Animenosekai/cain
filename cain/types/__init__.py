@@ -16,7 +16,7 @@ from .numbers import SignedInt, UnsignedInt, Int8, UInt8, Int16, UInt16, Int32, 
 from .nonetype import NoneType
 from .optionals import Optional
 from .unions import Union
-from .booleans import Boolean
+from .booleans import Boolean, Bool
 from .binary import Binary
 from .arrays import Array, List
 from .sets import Set

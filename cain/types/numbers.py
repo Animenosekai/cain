@@ -28,10 +28,10 @@ Structure
 Floating point numbers are encoded following IEEE 754.
 They are separated into single precision (`Float`) and double precision (`Double`) numbers.
 
-Complex numbers are encoded as two consecutive floats (`Complex`) or doubles (`DoubleComplex`).
-
 Decimals (`Decimal`) are exact representations of decimal numbers,
 without any approximations. They are encoded as strings.
+
+Complex numbers are encoded as two consecutive floats (`Complex`) or doubles (`DoubleComplex`).
 
 Integers are encoded by turning them into without using any approximation,
 converting them from base10 to base2.

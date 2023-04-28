@@ -9,21 +9,27 @@
   - [Social and economical issue](#social-and-economical-issue)
   - [Environmental issue](#environmental-issue)
 - [General Idea](#general-idea)
-- [Architecture](#architecture)
-  - [Header](#header)
-  - [Body](#body)
 - [Data encoding](#data-encoding)
-  - [Numbers](#numbers)
-    - [Integers](#integers)
-    - [Floating Point](#floating-point)
-  - [Strings](#strings)
-    - [Characters](#characters)
-      - [Unicode Characters](#unicode-characters)
-  - [Null](#null)
   - [Arrays](#arrays)
+    - [Case 1: Without repetition in the data](#case-1-without-repetition-in-the-data)
+    - [Case 2: With repetition in the data](#case-2-with-repetition-in-the-data)
+  - [Binary](#binary)
+  - [Booleans](#booleans)
+  - [Characters](#characters)
+  - [NoneType (null)](#nonetype-null)
+  - [Numbers](#numbers)
+    - [Floats](#floats)
+    - [Complex numbers](#complex-numbers)
+    - [Integers](#integers)
   - [Objects](#objects)
-  - [Enums](#enums)
-- [Data decoding](#data-decoding)
+    - [Case 1: No repetition in the data](#case-1-no-repetition-in-the-data)
+    - [Case 2: With a repetition in the data](#case-2-with-a-repetition-in-the-data)
+  - [Optionals](#optionals)
+  - [Ranges](#ranges)
+  - [Sets](#sets)
+  - [Strings](#strings)
+  - [Tuples](#tuples)
+  - [Unions](#unions)
 - [References](#references)
 
 ## Purpose
@@ -36,7 +42,7 @@ Even though our internet speeds are becoming faster and faster with technologies
 
 This brings a huge burden for some countries to develop further as the internet is expected, and already has, a central part in any economic but also public affairs.
 
-With up to 94% of companies now using cloud services and 67% of them having their infrastructure cloud-based, having smaller data storage options may benefit on an economic perspective.
+With up to 94%[^2] of companies now using cloud services and 67%[^2] of them having their infrastructure cloud-based, having smaller data storage options may benefit on an economic perspective.
 
 ### Environmental issue
 
@@ -50,66 +56,176 @@ While formats such as `JSON` and `XML` have big overheads, aiming at both human 
 
 Moreover, most data has and should have a fixed schema, which leverages the need to repeat it in the formatted value at the end.
 
-Finally, some data might be redundant and used mutiple times throughout the same file. References can avoid this by simply writing the data once and reference to it in the right fields. While this might be avoided with JSON using compression algorithms (which should definitely be used), this helps reduce uncompressed sizes, for browsers which don't support some compression algorithms yet, use cases outside of web development and size critical environments.
+Finally, some data might be redundant and used mutiple times throughout the same file. References can avoid this by simply writing the data once and reference to it in the right fields. While this might be avoided with JSON using compression algorithms (which should definitely be used), this helps reduce the uncompressed sizes, for browsers which don't support the compression algorithms yet or use cases outside of web development and size critical environments.
 
 This format aims at bringing the smallest data formatting possible for machine-to-machine communications by avoiding any redundancy and unnecessary syntax.
 
-## Architecture
-
-### Header
-
-### Body
-
 ## Data encoding
-
-### Numbers
-
-#### Integers
-
-#### Floating Point
-
-### Strings
-
-Strings are just arrays of fixed length characters
-
-They generally end with a null `\0` byte.
-
-#### Characters
-
-<!-- can't use this idea because most languages work on whole bytes and not bit per bit -->
-
-<!-- To optimize the size taken by characters, we can have them encoded different ways.
-
-##### Fixed Case Characters
-
-*Fixed Case* characters take 5 bits, which gives $2^5 = 32$ different entries.
-
-We can specify the case for the characters.
-
-| Character | `NULL` | `A` | `B` | `C` | `D` | `E` | `F` | `G` | `H` | `I` | `J`  | `K`  | `L`  | `M`  | `N`  | `O`  | `P`  | `Q`  | `R`  | `S`  | `T`  | `U`  | `V`  | `W`  | `X`  | `Y`  | `Z`  | `SPACE` | `NEWLINE` | `TAB` |
-| --------- | ------ | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | --- | --- | --- |
-| Value    | `0`    | `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` | `10` | `11` | `12` | `13` | `14` | `15` | `16` | `17` | `18` | `19` | `20` | `21` | `22` | `23` | `24` | `25` | `26` | `27` | `28` | `29` |
-
-##### Alphanumeric Characters
-
-| Character | `NULL` | `A` | `B` | `C` | `D` | `E` | `F` | `G` | `H` | `I` | `J`  | `K`  | `L`  | `M`  | `N`  | `O`  | `P`  | `Q`  | `R`  | `S`  | `T`  | `U`  | `V`  | `W`  | `X`  | `Y`  | `Z`  | `SPACE` | `NEWLINE` | `TAB` |
-| --------- | ------ | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | --- | --- | --- |
-| Value    | `0`    | `1` | `2` | `3` | `4` | `5` | `6` | `7` | `8` | `9` | `10` | `11` | `12` | `13` | `14` | `15` | `16` | `17` | `18` | `19` | `20` | `21` | `22` | `23` | `24` | `25` | `26` | `27` | `28` | `29` |
-
-##### ASCII Characters -->
-
-##### Unicode Characters
-
-### Null
 
 ### Arrays
 
+#### Case 1: Without repetition in the data
+
+Example: `[1, 2, 3]`
+
+```python
+\x00\x03  \x00\x00   \x00\x01 \x00\x02 \x00\x03
+~~~~~~~~  ~~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~
+Array     Number     Rest of data
+Length    of repeats
+```
+
+#### Case 2: With repetition in the data
+
+Example: `["Hello", "Hi", "Hello", "Hey"]`
+
+```python
+\x00\x04   \x00\x01    \x00\x02 \x00\x00 \x00\x02 Hello\x00        Hi\x00 Hey\x00
+~~~~~~~~   ~~~~~~~~   [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~] * n   ~~~~~~~~~~~~~~
+Array      Number of   Number    Index1   Index2  Repeated         Rest of data
+Length     repeats     of indices                 Data
+             (n)
+```
+
+### Binary
+
+```python
+\x00\x00\x00\x0b \x48\x65\x6c\x6c\x6f\x20\x77\x6f\x72\x6c\x64
+~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  size of blob                   blob itself
+```
+
+### Booleans
+
+`\x01` — Represents `True`
+`\x00` — Represents `False`
+
+### Characters
+
+Characters are encoded following the UTF-8 encoding.
+
+From: <https://en.wikipedia.org/wiki/UTF-8#Encoding>
+
+| Chararacter length | UTF-8 octet sequence                  |
+| ------------------ | ------------------------------------- |
+| 1 byte character   | `0xxxxxxx`                            |
+| 2 bytes character  | `110xxxxx 10xxxxxx`                   |
+| 3 bytes character  | `1110xxxx 10xxxxxx 10xxxxxx`          |
+| 4 bytes character  | `11110xxx 10xxxxxx 10xxxxxx 10xxxxxx` |
+
+The `x` has the actual code point.
+
+### NoneType (null)
+
+Nothing is appended, because the value does not change, we only need to know that it is `None`/`null`.
+
+### Numbers
+
+#### Floats
+
+Floating point numbers are encoded following IEEE 754.
+They are separated into single precision (`Float`) and double precision (`Double`) numbers.
+
+Decimals (`Decimal`) are exact representations of decimal numbers, without any approximations. They are encoded as strings.
+
+#### Complex numbers
+
+Complex numbers are encoded as two consecutive floats (`Complex`) or doubles (`DoubleComplex`).
+
+#### Integers
+
+Integers are encoded by turning them into without using any approximation, converting them from base10 to base2.
+
+When using the base `Int` class, you can modulate the range of encodable integers using the `short`, `long`, `signed` and `unsigned` parameters.
+
+You can also use the different fixed size classes (`Int64`, `UInt32`, etc.)
+to save time on the arguments processing.
+
+Refer to the different implementations for more information.
+
 ### Objects
 
-### Enums
+Note: Any index in the encoded data is the index of a key in the sorted list of keys.
 
-## Data decoding
+#### Case 1: No repetition in the data
+
+Example: `{"username": "Anise", "favorite_number": 2}`
+
+```python
+\x00\x00   \x00\x02 Anise\x00
+~~~~~~~~   ~~~~~~~~~~~~~~~~~·
+Number     Rest of data
+of repeats
+```
+
+#### Case 2: With a repetition in the data
+
+Example: `{"name": "Anise", "username": "Anise", "favorite_number": 2}`
+
+```python
+\x00\x01    \x00\x02 \x00\x01 \x00\x02 Anise\x00        \x00\x02
+~~~~~~~~   [~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~] * n   ~~~~~~~~~~~~~~
+Number of   Number    Index1   Index2  Repeated         Rest of data
+repeats     of indices                 Data
+(n)
+```
+
+Note: Unlike [Arrays](#arrays) we don't need to encode the length because it is fixed.
+
+### Optionals
+
+`\x00` — Represents `None`
+`\x01` + value encoded by Union — If the given value is not `None`,
+                                  the value will be encoded using the `Union` datatype.
+
+### Ranges
+
+```python
+\x00 \x04 \x02
+ (1)  (2)  (3)
+```
+
+1. The start of the range.
+2. The end of the range.
+3. The step of the range.
+
+Note: The integers used by default are unsigned 8-bit integers (covering the -128 to 127 range).
+
+Note: You can use the same type arguments as `Int` to change this behaviour.
+Refer to [`Int`](#integers) for more information.
+
+### Sets
+
+Because the order of the elemnts is not even maintained when making the set, the different type arguments are treated as a big `Union`.
+
+Under the hood, *Sets* are encoded the same as [Arrays](#arrays).
+Refer to [`Array`](#arrays) for more information.
+
+### Strings
+
+Each character is encoded using [`Character`](#characters) and the string ends with a NULL character (`\x00`).
+Refer to [`Character`](#characters) for more information.
+
+### Tuples
+
+Under the hood, *Tuples* are encoded the same as [Arrays](#arrays).
+Refer to [`Array`](#arrays) for more information.
+
+### Unions
+
+- If there is only one type argument specified, this argument will be used to encode and decode the value.
+- If there are multiple types possible for the value, the index of the type used is first prepended, then the value is encoded.
+
+```python
+\x01 \x00\x02
+ (1)    (2)
+```
+
+1. The index of the type in the different type arguments
+2. The actual encoded data
 
 ## References
 
 [^1]: Numbers as of 2023, according to a report by [*Kepios*](https://www.statista.com/statistics/617136/digital-population-worldwide/)
+
+[^2]: According to an article by [*Zippia*](https://www.zippia.com/advice/cloud-adoption-statistics/), written on Dec. 19, 2022, accessed on Apr. 28, 2023

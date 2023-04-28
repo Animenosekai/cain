@@ -49,14 +49,10 @@ class Set(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
             except (errors.UnknownTypeError, TypeError):
                 other_args.append(arg)
 
-        if len(results) > 1:
-            return [Union[results], *other_args]
-
-        return list(results) + other_args
+        return [Union[results], *other_args]
 
     @classmethod
     def _encode(cls, value: set[typing.Any], *args):
-
         return Array._encode(value, *cls.preprocess_types(args))
 
     @classmethod

@@ -40,3 +40,5 @@ class Boolean(Datatype):
         elif value.startswith(b'\x01'):
             return True, value[1:]
         raise errors.DecodingError(cls, "The given value does not seem to be a boolean")
+
+Bool = Boolean

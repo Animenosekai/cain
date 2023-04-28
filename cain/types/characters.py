@@ -12,7 +12,7 @@ Example
 -------
 >>> from cain.types import Character
 >>> c = Character("a")
->>> a.encoded
+>>> c.encoded
 b'a'
 >>> Character.encode("夏")
 b'\xe5\xa4\x8f'

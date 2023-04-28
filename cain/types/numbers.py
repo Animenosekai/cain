@@ -207,6 +207,9 @@ class Int(Number, typing.Generic[*T]):
         return int.from_bytes(value[:size], signed=signed), value[size:]
 
 
+Integer = Int
+
+
 class SignedInt(Int):
     """
     Represents a signed integer
@@ -339,7 +342,7 @@ class UInt32(Int):
 
     @staticmethod
     def process_args(args):
-        return False, 2
+        return False, 4
 
 
 UnsignedInt32 = uint32_t = uint32 = UInt32

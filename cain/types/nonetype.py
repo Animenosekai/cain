@@ -7,7 +7,7 @@ Example
 -------
 >>> from cain.types import NoneType
 >>> n = NoneType(None)
->>> b.encoded
+>>> n.encoded
 b''
 >>> NoneType.encode(None)
 b''

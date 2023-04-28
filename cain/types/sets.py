@@ -22,8 +22,10 @@ Refer to `Array` for more information.
 """
 import typing
 
+from cain import errors
 from cain.model import Datatype
-from cain.types import Array
+import cain.types
+from cain.types import Array, Union
 
 T = typing.TypeVarTuple("T")
 
@@ -33,12 +35,22 @@ class Set(Datatype, typing.Generic[*T]):
     Handles the encoding and decoding of arrays.
     """
 
+    @staticmethod
+    def preprocess_types(args):
+        if len(Array.process_types_args(args)) > 1:
+            raise ValueError("Set can only contain one type")
+
     @classmethod
     def _encode(cls, value: set[typing.Any], *args):
+        cls.preprocess_types(args)
         return Array._encode(value, *args)
 
     @classmethod
     def _decode(cls, value: bytes, *args):
+        # Note: It is still relevant to compare for redundancies because multiple values
+        # can have the same encoded value
+        cls.preprocess_types(args)
+
         # TODO: Look for optimisations utilizing the fact that sets are unordered
         data, value = Array._decode(value, *args)
         return set(data), value

@@ -12,7 +12,7 @@ Example
 >>> r = Range(range(0, 4, 2))
 >>> r.encoded
 b'\x00\x04\x02'
->>> Range.encode((range(0, 4, 2))
+>>> Range.encode(range(0, 4, 2))
 b'\x00\x04\x02'
 >>> Range.decode(b'\x00\x04\x02')
 range(0, 4, 2)

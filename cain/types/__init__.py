@@ -13,14 +13,14 @@ from .strings import String
 from .numbers import Number, Int, Float, Double, Decimal
 from .numbers import Complex, DoubleComplex
 from .numbers import SignedInt, UnsignedInt, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64
+from .nonetype import NoneType
+from .optionals import Optional
+from .unions import Union
 from .booleans import Boolean
 from .binary import Binary
 from .arrays import Array, List
 from .sets import Set
 from .tuples import Tuple
-from .optionals import Optional
-from .unions import Union
-from .nonetype import NoneType
 from .ranges import Range
 from .objects import Object, Dict
 

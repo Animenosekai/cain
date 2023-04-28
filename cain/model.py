@@ -20,7 +20,7 @@ class Datatype:
     __args__ = []
     __annotations__ = {}
 
-    def __init__(self, value: typing.Any) -> None:
+    def __init__(self, value: typing.Any = None) -> None:
         self.value = value
 
     # # When calling an already instantiated object, the __init__ method is called

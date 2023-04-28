@@ -52,15 +52,17 @@ Storage with smaller formats also means a smaller need to allocate resources for
 
 ## General Idea
 
-While formats such as `JSON` and `XML` have big overheads, aiming at both human and machine readable values, most of the time, the data will only be used within a single software or two, without even being shown once to the end user. Why bother having the human readable part for those use cases ?
+While formats such as [`JSON`](https://www.json.org) and [`XML`](https://www.w3.org/TR/xml/) have big overheads, aiming at both human and machine readable values, most of the time, the data will only be used within a single software or two, without even being shown once to the end user. Why bother having the human readable part for those use cases ?
 
 Moreover, most data has and should have a fixed schema, which leverages the need to repeat it in the formatted value at the end.
 
-Finally, some data might be redundant and used mutiple times throughout the same file. References can avoid this by simply writing the data once and reference to it in the right fields. While this might be avoided with JSON using compression algorithms (which should definitely be used), this helps reduce the uncompressed sizes, for browsers which don't support the compression algorithms yet or use cases outside of web development and size critical environments.
+Finally, some data might be redundant and used mutiple times throughout the same file. References can avoid this by simply writing the data once and reference to it in the right fields. While this might be avoided with JSON using [compression algorithms](https://developer.mozilla.org/en-US/docs/Web/HTTP/Compression) (which should definitely be used), this helps reduce the uncompressed sizes, for browsers which don't support the compression algorithms yet or use cases outside of web development and size critical environments.
 
 This format aims at bringing the smallest data formatting possible for machine-to-machine communications by avoiding any redundancy and unnecessary syntax.
 
 ## Data encoding
+
+Here are some examples on how the built-in datatypes are encoded with Cain.
 
 ### Arrays
 
@@ -124,7 +126,7 @@ Nothing is appended, because the value does not change, we only need to know tha
 
 #### Floats
 
-Floating point numbers are encoded following IEEE 754.
+Floating point numbers are encoded following [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754).
 They are separated into single precision (`Float`) and double precision (`Double`) numbers.
 
 Decimals (`Decimal`) are exact representations of decimal numbers, without any approximations. They are encoded as strings.

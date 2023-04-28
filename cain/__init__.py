@@ -13,7 +13,7 @@ Encoding basic Python object hierarchies:
 
 >>> import cain
 >>> from cain.types import Object, Optional
->>> dumps({"a": 2}, Object[{"a": int}])
+>>> cain.dumps({"a": 2}, Object[{"a": int}])
 b'\x00\x00\x02'
 >>> class TestObject(Object):
 ...     bar: tuple[str, Optional[str], float, int]

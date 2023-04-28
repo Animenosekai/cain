@@ -97,7 +97,7 @@ class Array(Datatype, typing.Generic[*T]):
             if types_length != length:
                 raise errors.EncodingError(cls,
                                            f"The given number of elements ({length}) "
-                                            f"is not matching the number of types provided in the model ({types_length})")
+                                           f"is not matching the number of types provided in the model ({types_length})")
             result = b""
             # All of the encoded integers will be less or equal than the length of the array
             # We can optimize the size of the encoded integers

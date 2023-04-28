@@ -30,12 +30,12 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type, mode
     Returns the right datatype
     """
 
-    type_args = [current_type_arg.__forward_arg__
-                 if isinstance(current_type_arg, typing.ForwardRef) else current_type_arg
-                 for current_type_arg in typing.get_args(datatype)]
-
     if hasattr(datatype, "__args__"):
-        type_args += datatype.__args__
+        type_args = datatype.__args__
+    else:
+        type_args = [current_type_arg.__forward_arg__
+                     if isinstance(current_type_arg, typing.ForwardRef) else current_type_arg
+                     for current_type_arg in typing.get_args(datatype)]
 
     if isinstance(datatype, model.Datatype):
         return datatype.__class__, datatype.args + type_args

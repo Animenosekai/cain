@@ -97,8 +97,8 @@ Length     repeats     of indices                 Data
 
 ### Booleans
 
-`\x01` — Represents `True`
-`\x00` — Represents `False`
+- `\x01` — Represents `True`
+- `\x00` — Represents `False`
 
 ### Characters
 

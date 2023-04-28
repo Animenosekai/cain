@@ -11,6 +11,9 @@ def test_encode():
     assert Set[int]({1, 2, 3}).encoded == b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
     assert Set[int].encode({1, 2, 3}) == b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
     assert Set.encode({1, 2, 3}, int) == b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
+    assert (Set.encode({"Hello", "Hi", "Hello", "Hey"}, str)
+            == b'\x00\x03\x00\x00Hey\x00Hello\x00Hi\x00')
+    assert Set.encode({"Hello", 1}, str, int) == b'\x00Hello\x00\x00\x01'
 
 
 def test_decode():

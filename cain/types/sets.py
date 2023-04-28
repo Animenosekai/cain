@@ -37,20 +37,31 @@ class Set(Datatype, typing.Generic[*T]):
 
     @staticmethod
     def preprocess_types(args):
-        if len(Array.process_types_args(args)) > 1:
-            raise ValueError("Set can only contain one type")
+        results = tuple()
+        other_args = []
+
+        for arg in args:
+            try:
+                current_type, args = cain.types.retrieve_type(arg)
+                results += (current_type,)
+            except (errors.UnknownTypeError, TypeError):
+                other_args.append(arg)
+
+        if len(results) > 1:
+            return [Union[results], *other_args]
+
+        return list(results) + other_args
 
     @classmethod
     def _encode(cls, value: set[typing.Any], *args):
-        cls.preprocess_types(args)
-        return Array._encode(value, *args)
+
+        return Array._encode(value, *cls.preprocess_types(args))
 
     @classmethod
     def _decode(cls, value: bytes, *args):
         # Note: It is still relevant to compare for redundancies because multiple values
         # can have the same encoded value
-        cls.preprocess_types(args)
 
         # TODO: Look for optimisations utilizing the fact that sets are unordered
-        data, value = Array._decode(value, *args)
+        data, value = Array._decode(value, *cls.preprocess_types(args))
         return set(data), value

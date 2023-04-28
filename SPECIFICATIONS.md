@@ -113,7 +113,8 @@ From: <https://en.wikipedia.org/wiki/UTF-8#Encoding>
 | 3 bytes character  | `1110xxxx 10xxxxxx 10xxxxxx`          |
 | 4 bytes character  | `11110xxx 10xxxxxx 10xxxxxx 10xxxxxx` |
 
-The `x` has the actual code point.
+> **Note**  
+> The `x` has the actual code point.
 
 ### NoneType (null)
 
@@ -145,7 +146,8 @@ Refer to the different implementations for more information.
 
 ### Objects
 
-Note: Any index in the encoded data is the index of a key in the sorted list of keys.
+> **Note**  
+> Any index in the encoded data is the index of a key in the sorted list of keys.
 
 #### Case 1: No repetition in the data
 
@@ -170,7 +172,8 @@ repeats     of indices                 Data
 (n)
 ```
 
-Note: Unlike [Arrays](#arrays) we don't need to encode the length because it is fixed.
+> **Note**  
+> Unlike [Arrays](#arrays) we don't need to encode the length because it is fixed.
 
 ### Optionals
 
@@ -189,10 +192,11 @@ Note: Unlike [Arrays](#arrays) we don't need to encode the length because it is 
 2. The end of the range.
 3. The step of the range.
 
-Note: The integers used by default are unsigned 8-bit integers (covering the -128 to 127 range).
-
-Note: You can use the same type arguments as `Int` to change this behaviour.
-Refer to [`Int`](#integers) for more information.
+> **Note**  
+> The integers used by default are unsigned 8-bit integers (covering the -128 to 127 range).
+>
+> **Note**  
+> You can use the same type arguments as `Int` to change this behaviour. Refer to [`Int`](#integers) for more information.
 
 ### Sets
 

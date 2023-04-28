@@ -57,7 +57,7 @@ or just: -->
 ```bash
 $ python -c "import cain; print(cain.__version__)"
 # output:
-cain v2.3
+cain v1.0(alpha)
 ```
 
 ## Usage

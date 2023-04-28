@@ -1,19 +1,20 @@
 """
 Tests for the `Set` datatype
 """
-from cain.types import Set, Union
+from cain.types import Set
 
 
 def test_encode():
     """
     Tests the `Set` datatype encoding logic
     """
-    assert Set[int]({1, 2, 3}).encoded == b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
-    assert Set[int].encode({1, 2, 3}) == b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
-    assert Set.encode({1, 2, 3}, int) == b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
-    assert (Set.encode({"Hello", "Hi", "Hello", "Hey"}, str)
-            == b'\x00\x03\x00\x00Hey\x00Hello\x00Hi\x00')
-    assert Set.encode({"Hello", 1}, str, int) == b'\x00Hello\x00\x00\x01'
+    assert Set[int].decode(Set[int]({1, 2, 3}).encoded) == {1, 2, 3}
+    assert Set[int].decode(Set[int].encode({1, 2, 3})) == {1, 2, 3}
+    assert Set.decode(Set.encode({1, 2, 3}, int), int) == {1, 2, 3}
+    assert (Set.decode(Set.encode({"Hello", "Hi", "Hello", "Hey"}, str), str)
+            == {"Hello", "Hi", "Hey"})
+    assert Set.decode(Set.encode({"Hello", 1}, str, int), str, int) == {"Hello", 1}
+    assert Set[str, int].decode(Set[str, int].encode({"Hello", 1})) == {"Hello", 1}
 
 
 def test_decode():
@@ -22,6 +23,9 @@ def test_decode():
     """
     assert Set[int].decode(b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03') == {1, 2, 3}
     assert Set.decode(b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03', int) == {1, 2, 3}
+    assert Set.decode(b'\x00\x03\x00\x00Hello\x00Hi\x00Hey\x00', str) == {"Hello", "Hi", "Hey"}
+    assert Set.decode(b'\x00\x02\x00\x00\x00Hello\x00\x01\x00\x01', str, int) == {"Hello", 1}
+    assert Set[str, int].decode(b'\x00\x02\x00\x00\x00Hello\x00\x01\x00\x01') == {"Hello", 1}
 
 
 def test_repetitions():

@@ -22,15 +22,17 @@ Refer to `Array` for more information.
 """
 import typing
 
+import typing_extensions
+
+import cain.types
 from cain import errors
 from cain.model import Datatype
-import cain.types
 from cain.types import Array, Union
 
-T = typing.TypeVarTuple("T")
+T = typing_extensions.TypeVarTuple("T")
 
 
-class Set(Datatype, typing.Generic[*T]):
+class Set(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of arrays.
     """

@@ -22,14 +22,15 @@ Structure
                                   the value will be encoded using the `Union` datatype.
 """
 import typing
+import typing_extensions
 
 import cain.types
 from cain.model import Datatype
 
-T = typing.TypeVarTuple("T")
+T = typing_extensions.TypeVarTuple("T")
 
 
-class Optional(Datatype, typing.Generic[*T]):
+class Optional(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of optional elements.
     """

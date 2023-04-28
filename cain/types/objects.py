@@ -50,7 +50,6 @@ repeats     of indices                 Data
 Note: Unlike Arrays we don't need to encode the length because it is fixed.
 """
 import typing
-import copy
 
 import cain.types
 from cain.model import Datatype

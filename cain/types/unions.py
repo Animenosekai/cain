@@ -31,22 +31,23 @@ the index of the type used is first prepended, then the value is encoded.
 (2): The actual encoded data
 """
 import typing
+import typing_extensions
 
 import cain.types
 import cain.types.numbers as numbers
 from cain import errors
 from cain.model import Datatype
 
-T = typing.TypeVarTuple("T")
+T = typing_extensions.TypeVarTuple("T")
 
 
-class Union(Datatype, typing.Generic[*T]):
+class Union(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of union elements (elements which can be of different types)
     """
 
     @classmethod
-    def _encode(cls, value: typing.Union[*T], *args):
+    def _encode(cls, value: typing.Union[typing_extensions.Unpack[T]], *args):
         types_length = len(args)
         if types_length == 1:
             arg_type, type_args = cain.types.retrieve_type(args[0])

@@ -35,14 +35,15 @@ Note: The integers used by default are unsigned 8-bit integers (covering the -12
       Refer to `Int` for more information.
 """
 import typing
+import typing_extensions
 
 import cain.types.numbers as numbers
 from cain.model import Datatype
 
-T = typing.TypeVarTuple("T")
+T = typing_extensions.TypeVarTuple("T")
 
 
-class Range(Datatype, typing.Generic[*T]):
+class Range(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of ranges.
     """

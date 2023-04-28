@@ -46,6 +46,7 @@ Refer to the different implementations for more information.
 """
 import struct
 import typing
+import typing_extensions
 import decimal
 
 from cain.types import String
@@ -60,7 +61,7 @@ unsigned = UNSIGNED = Unsigned = "unsigned"
 long = LONG = Long = "long"
 short = SHORT = Short = "short"
 
-T = typing.TypeVarTuple("T")
+T = typing_extensions.TypeVarTuple("T")
 
 # Number parent class
 
@@ -156,7 +157,7 @@ class DoubleComplex(Number):
 # Integers
 
 
-class Int(Number, typing.Generic[*T]):
+class Int(Number, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Represents an integer
 
@@ -199,12 +200,12 @@ class Int(Number, typing.Generic[*T]):
     @classmethod
     def _encode(cls, value: int, *args):
         signed, size = cls.process_args(args)
-        return int(value).to_bytes(size, signed=signed)
+        return int(value).to_bytes(size, signed=signed, byteorder="big")
 
     @classmethod
     def _decode(cls, value: bytes, *args):
         signed, size = cls.process_args(args)
-        return int.from_bytes(value[:size], signed=signed), value[size:]
+        return int.from_bytes(value[:size], signed=signed, byteorder="big"), value[size:]
 
 
 Integer = Int

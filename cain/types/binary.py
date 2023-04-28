@@ -25,6 +25,7 @@ Structure
   size of blob                   blob itself
 """
 import typing
+import typing_extensions
 
 from cain.model import Datatype
 
@@ -32,10 +33,10 @@ from cain.model import Datatype
 long = LONG = Long = "long"
 short = SHORT = Short = "short"
 
-T = typing.TypeVarTuple("T")
+T = typing_extensions.TypeVarTuple("T")
 
 
-class Binary(Datatype, typing.Generic[*T]):
+class Binary(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of binary blob.
 
@@ -93,10 +94,10 @@ class Binary(Datatype, typing.Generic[*T]):
     def _encode(cls, value: bytes, *args):
         len_size = cls.process_args(args)
         # length of blob + blob itself
-        return len(value).to_bytes(len_size, signed=False) + value
+        return len(value).to_bytes(len_size, signed=False, byteorder="big") + value
 
     @classmethod
     def _decode(cls, value: bytes, *args):
         len_size = cls.process_args(args)
-        blob_size = int.from_bytes(value[:len_size], signed=False)  # getting the length first
+        blob_size = int.from_bytes(value[:len_size], signed=False, byteorder="big")  # getting the length first
         return value[len_size:len_size + blob_size], value[len_size + blob_size:]  # decoding the appropriate length

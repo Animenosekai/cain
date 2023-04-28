@@ -21,14 +21,15 @@ Under the hood, Tuples are encoded the same as Arrays.
 Refer to `Array` for more information.
 """
 import typing
+import typing_extensions
 
 from cain.model import Datatype
 from cain.types import Array
 
-T = typing.TypeVarTuple("T")
+T = typing_extensions.TypeVarTuple("T")
 
 
-class Tuple(Datatype, typing.Generic[*T]):
+class Tuple(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of arrays.
     """

@@ -8,19 +8,19 @@ import typing
 import cain.model as model
 import cain.errors as errors
 
-from .numbers import Number, Int, Float, Double
+from .numbers import Number, Int, Float, Double, Decimal
 from .booleans import Boolean
 from .binary import Binary
 from .characters import Character
 from .strings import String
-from .arrays import Array
+from .arrays import Array, List
 from .sets import Set
 from .tuples import Tuple
 from .optional import Optional
 from .union import Union
 from .nonetype import NoneType
 from .ranges import Range
-from .objects import Object
+from .objects import Object, Dict
 
 
 def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type, model.Datatype]) -> typing.Tuple[typing.Type[model.Datatype], typing.List[typing.Union[str, typing.Type]]]:

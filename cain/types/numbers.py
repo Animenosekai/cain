@@ -41,7 +41,9 @@ Refer to the different implementations for more information.
 """
 import struct
 import typing
+import decimal
 
+import cain.types
 from cain.model import Datatype
 
 # Type Arguments
@@ -101,6 +103,20 @@ class Double(Number):
 
     The numbers can range from -1.7e308 to +1.7e308
     """
+
+
+class Decimal(cain.types.String, Number):
+    """
+    Exact representation of a decimal number, no approximation or range is needed.
+    """
+    @classmethod
+    def _encode(cls, value: typing.Union[str, decimal.Decimal], *args):
+        return super()._encode(str(value), *args)
+
+    @classmethod
+    def _decode(cls, value: bytes, *args):
+        result, value = super()._decode(value, *args)
+        return decimal.Decimal(result), value
 
 # Integers
 
@@ -322,6 +338,10 @@ class UInt64(Int):
 
 
 UnsignedInt64 = uint64_t = uint64 = UInt64
+
+
+class Complex(Number):
+    real:
 
 
 def recommended_size(number: int, signed: bool = False) -> typing.Type[Int]:

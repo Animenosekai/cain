@@ -28,6 +28,11 @@ Structure
 Floating point numbers are encoded following IEEE 754.
 They are separated into single precision (`Float`) and double precision (`Double`) numbers.
 
+Complex numbers are encoded as two consecutive floats (`Complex`) or doubles (`DoubleComplex`).
+
+Decimals (`Decimal`) are exact representations of decimal numbers,
+without any approximations. They are encoded as strings.
+
 Integers are encoded by turning them into without using any approximation,
 converting them from base10 to base2.
 
@@ -88,7 +93,7 @@ class Float(Number):
     """
 
     @classmethod
-    def _encode(cls, value: int, *args):
+    def _encode(cls, value: float, *args):
         return struct.pack('f', float(value))
 
     @classmethod
@@ -117,6 +122,36 @@ class Decimal(cain.types.String, Number):
     def _decode(cls, value: bytes, *args):
         result, value = super()._decode(value, *args)
         return decimal.Decimal(result), value
+
+
+class Complex(Number):
+    """
+    Represents a complex number, encoded with 2*32 bits (2*4 bytes).
+    """
+
+    @classmethod
+    def _encode(cls, value: complex, *args):
+        return struct.pack('ff', value.real, value.imag)
+
+    @classmethod
+    def _decode(cls, value: bytes, *args):
+        [real, imag] = struct.unpack('ff', value[:8])
+        return complex(real, imag), value[8:]
+
+
+class DoubleComplex(Number):
+    """
+    Represents a complex number, encoded with 2*64 bits (2*8 bytes).
+    """
+
+    @classmethod
+    def _encode(cls, value: complex, *args):
+        return struct.pack('dd', value.real, value.imag)
+
+    @classmethod
+    def _decode(cls, value: bytes, *args):
+        [real, imag] = struct.unpack('dd', value[:16])
+        return complex(real, imag), value[16:]
 
 # Integers
 
@@ -338,10 +373,6 @@ class UInt64(Int):
 
 
 UnsignedInt64 = uint64_t = uint64 = UInt64
-
-
-class Complex(Number):
-    real:
 
 
 def recommended_size(number: int, signed: bool = False) -> typing.Type[Int]:

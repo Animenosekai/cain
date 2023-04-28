@@ -6,12 +6,22 @@ Defines the Array datatype, which is used to store list of values.
 Example
 -------
 >>> from cain.types import Array
+>>> Array[int]([1, 2, 3]).encoded
+b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
+>>> Array[int].encode([1, 2, 3])
+b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
 >>> Array.encode([1, 2, 3], int)
 b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
 >>> Array.decode(b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03', int)
 [1, 2, 3]
 >>> Array.encode(["Hello", "Hi", "Hello", "Hey"], str)
 b'\x00\x04\x00\x01\x00\x02\x00\x00\x00\x02Hello\x00Hi\x00Hey\x00'
+>>> Array.encode(["Hello", 1], str, int)
+b'\x00Hello\x00\x00\x01'
+>>> Array[str, int, str].encode(["Hello", 1, "Yay"])
+b'\x00Hello\x00\x00\x01Yay\x00'
+>>> Array[str, int].encode(["Hello", 1, "Yay"], str)
+b'\x00Hello\x00\x00\x01Yay\x00'
 
 Structure
 ---------

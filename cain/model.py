@@ -117,7 +117,7 @@ class Datatype:
 
         Parameters
         ----------
-        value: bytes
+        value: Any
             The data to encode
         *args: tuple[str, type]
             Any argument passed with the type.

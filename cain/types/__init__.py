@@ -18,8 +18,8 @@ from .binary import Binary
 from .arrays import Array, List
 from .sets import Set
 from .tuples import Tuple
-from .optional import Optional
-from .union import Union
+from .optionals import Optional
+from .unions import Union
 from .nonetype import NoneType
 from .ranges import Range
 from .objects import Object, Dict

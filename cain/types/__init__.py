@@ -8,13 +8,13 @@ import typing
 import cain.model as model
 import cain.errors as errors
 
+from .characters import Character
+from .strings import String
 from .numbers import Number, Int, Float, Double, Decimal
 from .numbers import Complex, DoubleComplex
 from .numbers import SignedInt, UnsignedInt, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64
 from .booleans import Boolean
 from .binary import Binary
-from .characters import Character
-from .strings import String
 from .arrays import Array, List
 from .sets import Set
 from .tuples import Tuple

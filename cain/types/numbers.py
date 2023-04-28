@@ -48,7 +48,7 @@ import struct
 import typing
 import decimal
 
-import cain.types
+from cain.types import String
 from cain.model import Datatype
 
 # Type Arguments
@@ -110,17 +110,17 @@ class Double(Number):
     """
 
 
-class Decimal(cain.types.String, Number):
+class Decimal(Number):
     """
     Exact representation of a decimal number, no approximation or range is needed.
     """
     @classmethod
     def _encode(cls, value: typing.Union[str, decimal.Decimal], *args):
-        return super()._encode(str(value), *args)
+        return String._encode(str(value), *args)
 
     @classmethod
     def _decode(cls, value: bytes, *args):
-        result, value = super()._decode(value, *args)
+        result, value = String._decode(value, *args)
         return decimal.Decimal(result), value
 
 

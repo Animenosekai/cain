@@ -19,8 +19,8 @@ def test_custom():
     assert MyObject.encode('data') == b'encoded data'
     assert MyObject.decode(b'encoded data') == 'decoded data'
     assert MyObject("data").encoded == b'encoded data'
-    assert MyObject[{"hey": int}].__annotations__ == {"hey": int}
-    assert MyObject[{"hey": int}, str].__annotations__ == {"hey": int}
+    assert typing.get_type_hints(MyObject[{"hey": int}]) == {"hey": int}
+    assert typing.get_type_hints(MyObject[{"hey": int}, str]) == {"hey": int}
     assert MyObject[{"hey": int}, str].__args__ == [str]
     assert MyObject[{"hey": int}, str, int].__args__ == [str, int]
     assert MyObject[str, int].__args__ == [str, int]

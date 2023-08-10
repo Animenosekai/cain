@@ -25,7 +25,13 @@ from .ranges import Range
 from .objects import Object, Dict
 
 
-def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type, model.Datatype]) -> typing.Tuple[typing.Type[model.Datatype], typing.List[typing.Union[str, typing.Type]]]:
+# from .types import Type, TYPES_REGISTRY
+
+
+def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype],
+                                         type,
+                                         model.Datatype]) -> typing.Tuple[typing.Type[model.Datatype],
+                                                                          typing.List[typing.Union[str, typing.Type]]]:
     """
     Returns the right datatype
     """
@@ -55,7 +61,7 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type, mode
         return Range, type_args
 
     if issubclass(datatype, model.Datatype):
-        return datatype, type_args
+        return datatype.origin, type_args
 
     if issubclass(datatype, (set)) or datatype is typing.Set:
         return Set, type_args
@@ -84,4 +90,8 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype], type, mode
     if issubclass(datatype, (bytes)):
         return Binary, type_args
 
-    raise errors.UnknownTypeError(datatype, f"The given datatype {datatype.__name__} is not known")
+    if issubclass(datatype, type) or datatype is typing.Type:
+        from .types import Type
+        return Type, type_args
+
+    raise errors.UnknownTypeError(datatype, f"The given datatype `{datatype.__name__}` is not known")

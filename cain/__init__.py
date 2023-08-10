@@ -101,38 +101,17 @@ __all__ = [
     'load',
     'dump',
     'dumps',
+    'encode_schema',
+    'decode_schema',
 
     # Versioning and copyrights
-    '__version_tuple__',
-    '__version_string__',
-    '__author__',
-    '__copyright__',
-    '__credits__',
-    '__license__',
-    '__version__',
-    '__maintainer__',
-    '__email__',
-    '__status__'
+    "__author__",
+    "__copyright__",
+    "__license__",
+    "__version__"
 ]
 
-from . import errors, types, model
+from . import errors, model, types
+from .__info__ import __author__, __copyright__, __license__, __version__
+from .cain import decode_schema, dump, dumps, encode_schema, load, loads
 from .model import Datatype
-from .cain import loads, load, dump, dumps
-
-__version_tuple__ = (1, 0, '(alpha)')
-
-
-def __version_string__():
-    if isinstance(__version_tuple__[-1], str):
-        return '.'.join(map(str, __version_tuple__[:-1])) + __version_tuple__[-1]
-    return '.'.join(str(i) for i in __version_tuple__)
-
-
-__author__ = 'Anime no Sekai'
-__copyright__ = 'Copyright 2023, cain'
-__credits__ = ['animenosekai']
-__license__ = 'MIT License'
-__version__ = f'cain v{__version_string__()}'
-__maintainer__ = 'Anime no Sekai'
-__email__ = 'niichannomail@gmail.com'
-__status__ = 'Stable'

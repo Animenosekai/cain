@@ -31,7 +31,7 @@ T = typing_extensions.TypeVarTuple("T")
 
 class Tuple(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
-    Handles the encoding and decoding of arrays.
+    Handles the encoding and decoding of tuples.
     """
 
     @classmethod

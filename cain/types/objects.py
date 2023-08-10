@@ -83,7 +83,7 @@ class Object(Datatype):
     @classmethod
     def _encode(cls, value: dict, *args):
         result = b""
-        types = sorted(cls.__annotations__.items(), key=lambda item: item[0])
+        types = sorted(typing.get_type_hints(cls).items(), key=lambda item: item[0])
         # Because we are working with integers less or equal than a fixed length,
         # we can optimize the size of the encoded integers.
         integer_encoder = cain.types.numbers.recommended_size(len(types))
@@ -139,7 +139,7 @@ class Object(Datatype):
     @classmethod
     def _decode(cls, value: bytes, *args):
         results = {}
-        types = sorted(cls.__annotations__.items(), key=lambda item: item[0])
+        types = sorted(typing.get_type_hints(cls).items(), key=lambda item: item[0])
         # Getting the right integer decoder
         integer_encoder = cain.types.numbers.recommended_size(len(types))
 

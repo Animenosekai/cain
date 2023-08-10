@@ -4,7 +4,7 @@ Testing the difference between JSON and Cain
 
 import json
 import typing
-from nasse.timer import Timer
+from nasse.utils.timer import Timer
 
 from cain.types import Object, String
 # from cain.types.characters import FIXED_CASE, UPPER_CASE

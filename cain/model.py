@@ -5,12 +5,19 @@ Defines the base classes for data models
 """
 
 import typing
-import copy
 
 from cain import errors
 
 
-class Datatype:
+class DatatypeMeta(type):
+    """A metaclass to give a better python representation of Datatypes,
+    especially when dynamically sub-classing them"""
+
+    def __repr__(cls) -> str:
+        return cls().__repr__()
+
+
+class Datatype(metaclass=DatatypeMeta):
     """
     Holds a value and the different implementations to encode and
     decode between Python objects and Cain objects.
@@ -73,6 +80,18 @@ class Datatype:
         return NewDatatype
 
     @classmethod
+    @property
+    def origin(cls):
+        """Returns a version of the current datatype without any arguments or type annotations"""
+        class NewDatatype(cls):
+            """A subclass which doesn't have any type argument"""
+            __annotations__ = {}
+            __args__ = []
+        NewDatatype.__name__ = cls.__name__
+
+        return NewDatatype
+
+    @classmethod
     def _encode(cls, value: typing.Any, *args) -> bytes:
         """
         The implementation of the encoding logic (Python -> Cain)
@@ -108,7 +127,7 @@ class Datatype:
         tuple[Any, bytes]
             The decoded value and the remaining bytes from `value` after decoding
         """
-        raise errors.DecodingError(cls, f"A value could not be decoded to `{cls.__name__}` value")
+        raise errors.DecodingError(cls, f"A value could not be decoded to `{cls.__name__}`")
 
     @classmethod
     def encode(cls, value: typing.Any, *args) -> bytes:
@@ -181,13 +200,16 @@ class Datatype:
         """
         result = self.__class__.__name__
         if self.__annotations__:
-            annotations_r = {}
-            for key, value in self.__annotations__.items():
-                try:
-                    annotations_r[key] = value.__name__
-                except AttributeError:
-                    annotations_r[key] = str(value)
-            result += f"<{annotations_r}>"
+            # annotations_r = {}
+            # for key, value in typing.get_type_hints(self).items():
+            #     try:
+            #         annotations_r[key] = value.__name__
+            #     except AttributeError:
+            #         annotations_r[key] = str(value)
+            try:
+                result += f"<{typing.get_type_hints(self)}>"
+            except Exception:
+                result += f"<{self.__annotations__}>"
         if self.__args__:
             args_r = []
             for arg in self.__args__:
@@ -202,3 +224,9 @@ class Datatype:
 
     def __str__(self) -> str:
         return str(self.value)
+
+    def __getattr__(self, key: str):
+        return getattr(self.value, key)
+
+    def __getitem__(self, key: str):
+        return self.value[key]

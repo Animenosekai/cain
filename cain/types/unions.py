@@ -67,7 +67,7 @@ class Union(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
 
         # Might be a subclass then
         types_names = []
-        print(processed_types)
+        # print(processed_types)
         for index, (arg_type, type_args) in enumerate(processed_types):
             if issubclass(arg_type, current_type):
                 return int_encoder._encode(index, *args) + arg_type._encode(value, *type_args)

@@ -224,5 +224,4 @@ class Array(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
 
         return results, value
 
-
 List = Array

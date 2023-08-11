@@ -18,7 +18,7 @@ TEST = {
         # "g": b"Hello world"
         "h": "HELLO WORLD",
         "i": "Hi!",
-        "j": [1, 2, 3],
+        "j": [1, 2, 3, 1, 1],
         "k": (1, "hello", True),
         "l": None,
         "m": "Yay",
@@ -55,8 +55,6 @@ class ObjectA(Object):
     class ObjectB(Object):
         """test object B"""
         f: bool
-        # g: bytes
-        # h: String[FIXED_CASE, UPPER_CASE]
         h: str
         i: str
         j: list[int]

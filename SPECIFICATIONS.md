@@ -29,6 +29,7 @@
   - [Sets](#sets)
   - [Strings](#strings)
   - [Tuples](#tuples)
+  - [Type](#type)
   - [Unions](#unions)
 - [References](#references)
 
@@ -216,6 +217,18 @@ Refer to [`Character`](#characters) for more information.
 
 Under the hood, *Tuples* are encoded the same as [Arrays](#arrays).
 Refer to [`Array`](#arrays) for more information.
+
+### Type
+
+*Types* are actually just an [Object](#objects) with the following attributes:
+
+- `index`: The index of the Datatype in `TYPES_REGISTRY`
+- `name`: If changed, the name of the Datatype
+- `annotations_keys`: The keys for the annotations, in the order they appear in `annotations_values`
+- `annotations_values`: The values for the annotations, in the order they appear in `annotations_values`
+- `arguments`: The different type arguments
+
+Refer to [`Object`](#objects) for more information.
 
 ### Unions
 

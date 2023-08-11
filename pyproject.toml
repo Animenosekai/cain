@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "cain"
 version = "1.0"
-description = "A small yet powerful data format!"
+description = "A small yet powerful data format ✨"
 license = "MIT"
 authors = ["Animenosekai <animenosekai.mail@gmail.com>"]
 maintainers = ["Animenosekai <animenosekai.mail@gmail.com>"]

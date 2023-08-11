@@ -65,20 +65,14 @@ class Object(Datatype):
         value.update(kwargs)
         super().__init__(value, *args)
 
-    def __getattribute__(self, name: str) -> typing.Any:
+    def __getattr__(self, key: str):
         try:
-            return super().__getattribute__(name)
-        except AttributeError:
+            return super().__getattr__(key)
+        except AttributeError as err:
             try:
-                return getattr(self.value, name)
-            except AttributeError as err:
-                try:
-                    return self.value[name]
-                except KeyError:
-                    raise err
-
-    def __getitem__(self, key: str) -> typing.Any:
-        return self.value[key]
+                return self[key]
+            except KeyError as exc:
+                raise err from exc
 
     @classmethod
     def _encode(cls, value: dict, *args):

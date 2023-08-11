@@ -27,6 +27,7 @@ from .objects import Object, Dict
 
 # from .types import Type, TYPES_REGISTRY
 
+NONE_TYPE = type(None)
 
 def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype],
                                          type,
@@ -54,7 +55,7 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype],
     if datatype == typing.Union:
         return Union, type_args
 
-    if datatype is None:
+    if datatype is None or datatype is NONE_TYPE:
         return NoneType, type_args
 
     if issubclass(datatype, (range)):

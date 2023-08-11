@@ -7,10 +7,9 @@ A small yet powerful data format!
 import typing
 
 import cain.types
-import cain.types.types as cain_schema
 from cain.model import Datatype
 from cain.types import retrieve_type
-
+from cain.types.types import Type
 
 # the Schema type
 T = typing.TypeVar("T")
@@ -19,7 +18,7 @@ Schema = typing.Union[typing.Type[Datatype], Datatype, typing.Type[T]]
 
 def dumps(obj: typing.Any,
           schema: Schema,
-          include_header: typing.Union[bool, cain_schema.Type] = False) -> bytes:
+          include_header: typing.Union[bool, Type] = False) -> bytes:
     """
     Encodes the given object `obj` as a Cain formatted data, following `schema`.
 
@@ -140,7 +139,7 @@ def loads(obj: bytes, schema: typing.Optional[Schema[T]] = None) -> T:
     """
     if not schema:
         schema, obj = cain.types.Tuple[bytes, bytes].decode(obj)
-        schema = cain_schema.Type.decode(schema)
+        schema = Type.decode(schema)
     encoder, type_args = retrieve_type(schema)
     return encoder.decode(obj, *type_args)
 
@@ -204,7 +203,7 @@ def encode_schema(schema: Schema) -> bytes:
     >>> cain.encode_schema(list[str, TestObject])
     b'\x01\x02\x00\x01\x00\x00\x00\x00\x00\x02\x00\x00...\x00\x16\x01\x00TestObject\x00\x00\x00'
     """
-    return cain_schema.Type.encode(schema)
+    return Type.encode(schema)
 
 
 def decode_schema(schema: bytes) -> typing.Type[Datatype]:
@@ -229,4 +228,4 @@ def decode_schema(schema: bytes) -> typing.Type[Datatype]:
     >>> cain.decode_schema(b'\x01\x02\x00\x01\x00\x00\x00\x00\x00\x02\x00\x00...\x00\x16\x01\x00TestObject\x00\x00\x00')
     Array[String, TestObject]
     """
-    return cain_schema.Type.decode(schema)
+    return Type.decode(schema)

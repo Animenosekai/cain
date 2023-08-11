@@ -30,6 +30,10 @@ b'\\\x00'
 >>> with open('test.cain', 'w+b') as fp:
 ...     cain.dump(['foo', {'bar': ('baz', None, 1.0, 2)}], fp, schema)
 ...
+>>> from cain.types import Int
+>>> from cain.types.numbers import unsigned
+>>> Int[unsigned].encode(4)
+b'\x00\x04'
 
 Decoding Cain:
 
@@ -42,7 +46,10 @@ Decoding Cain:
 ...     cain.load(fp, schema)
 ...
 ['foo', {'bar': ('baz', None, 1.0, 2)}]
-
+>>> from cain.types import Int
+>>> from cain.types.numbers import unsigned
+>>> Int[unsigned].decode(b'\x00\x04')
+4
 
 You can also create your own encoders:
 
@@ -95,6 +102,8 @@ __all__ = [
 
     # Classes
     'Datatype',
+    'Object',
+    'Type',
 
     # Functions
     'loads',
@@ -113,5 +122,6 @@ __all__ = [
 
 from . import errors, model, types
 from .__info__ import __author__, __copyright__, __license__, __version__
-from .cain import decode_schema, dump, dumps, encode_schema, load, loads
+from .cain import decode_schema, dump, dumps, encode_schema, load, loads, Type
 from .model import Datatype
+from .types import Object

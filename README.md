@@ -29,7 +29,6 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
 - [Installing](#installing)
-  - [Option 1: From PyPI](#option-1-from-pypi)
   - [Option 2: From Git](#option-2-from-git)
 - [Usage](#usage)
   - [Python](#python)
@@ -115,7 +114,7 @@ Incompatible versions:     2
 Always check if your Python version works with `cain` before using it in production.
 
 ## Installing
-
+<!-- 
 ### Option 1: From PyPI
 
 ```bash
@@ -123,7 +122,7 @@ pip install --upgrade cain
 ```
 
 > This will install the latest stable version from PyPI
-
+ -->
 ### Option 2: From Git
 
 ```bash
@@ -250,7 +249,7 @@ You can also create your own encoders:
 ```
 
 > **Warning**  
-> Keep in mind that they custom datatypes outside of subclasses of `Object` won't be able to be encoded by the Type encoder (used in schema headers for example)
+> Keep in mind that custom datatypes outside of subclasses of `Object` won't be able to be encoded by the Type encoder (used in schema headers for example)
 
 ### CLI
 

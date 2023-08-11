@@ -52,7 +52,7 @@ Cain is a new data interchange format which aims at providing the smallest possi
 It is based on pre-defined schemas which leverages the need to specify it within the final encoded data.
 
 > **Note**  
-> Look at the [*SPECIFICATIONS*](SPECIFICATIONS.md) file for more information on the purpose and idea behind this project.
+> Look at the [*SPECIFICATIONS*](https://github.com/Animenosekai/cain/blob/main/SPECIFICATIONS.md) file for more information on the purpose and idea behind this project.
 
 ### Comparison
 

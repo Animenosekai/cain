@@ -7,11 +7,11 @@
 <br>
 <br>
 
-<!-- [![PyPI version](https://badge.fury.io/py/cain.svg)](https://pypi.org/project/cain/)
+[![PyPI version](https://badge.fury.io/py/cain.svg)](https://pypi.org/project/cain/)
 [![Downloads](https://static.pepy.tech/personalized-badge/cain?period=total&units=international_system&left_color=grey&right_color=blue&left_text=Total%20Downloads)](https://pepy.tech/project/cain)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/cain)](https://pypistats.org/packages/cain)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/cain)](https://pypi.org/project/cain/)
-[![PyPI - Status](https://img.shields.io/pypi/status/cain)](https://pypi.org/project/cain/) -->
+[![PyPI - Status](https://img.shields.io/pypi/status/cain)](https://pypi.org/project/cain/)
 [![GitHub - License](https://img.shields.io/github/license/Animenosekai/cain)](https://github.com/Animenosekai/cain/blob/master/LICENSE)
 [![GitHub top language](https://img.shields.io/github/languages/top/Animenosekai/cain)](https://github.com/Animenosekai/cain)
 [![CodeQL Checks Badge](https://github.com/Animenosekai/cain/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Animenosekai/cain/actions/workflows/codeql-analysis.yml)
@@ -29,6 +29,7 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
 - [Installing](#installing)
+  - [Option 1: From PyPI](#option-1-from-pypi)
   - [Option 2: From Git](#option-2-from-git)
 - [Usage](#usage)
   - [Python](#python)
@@ -117,15 +118,15 @@ Incompatible versions:     2
 Always check if your Python version works with `cain` before using it in production.
 
 ## Installing
-<!-- 
+
 ### Option 1: From PyPI
 
 ```bash
 pip install --upgrade cain
 ```
 
-> This will install the latest stable version from PyPI
- -->
+> This will install the latest version from PyPI
+
 ### Option 2: From Git
 
 ```bash

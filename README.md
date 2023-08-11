@@ -360,7 +360,7 @@ $ cain encode '["Hello", "world"]' --schema="list[str]" --schema-eval
 
 This module is currently in development and might contain bugs.
 
-This comes with a few disadvantages (for example, it takes a significantly longer time to encode objects with Cain than with the standard `json` module) but this is expected to improve over time.
+This comes with a few disadvantages (for example, it takes a longer time to encode objects with Cain than with the standard `json` module) but this is expected to improve over time.
 
 Please verify and test the module thoroughly before releasing anything at a production stage.
 

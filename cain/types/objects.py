@@ -188,7 +188,7 @@ class Object(Datatype):
             data, value = current_type._decode(value, *type_args)
             results[key] = data
 
-        return results, value
+        return cls(results), value
 
 
 Dict = Object

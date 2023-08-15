@@ -9,7 +9,6 @@ import cain.model as model
 import cain.errors as errors
 
 from .characters import Character
-from .enums import Enum
 from .strings import String
 from .numbers import Number, Int, Float, Double, Decimal
 from .numbers import Complex, DoubleComplex
@@ -24,6 +23,7 @@ from .sets import Set
 from .tuples import Tuple
 from .ranges import Range
 from .objects import Object, Dict
+from .enums import Enum
 
 
 # from .types import Type, TYPES_REGISTRY

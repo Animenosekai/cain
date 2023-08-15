@@ -16,6 +16,7 @@
   - [Binary](#binary)
   - [Booleans](#booleans)
   - [Characters](#characters)
+  - [Enums](#enums)
   - [NoneType (null)](#nonetype-null)
   - [Numbers](#numbers)
     - [Floats](#floats)
@@ -118,6 +119,10 @@ From: <https://en.wikipedia.org/wiki/UTF-8#Encoding>
 
 > **Note**  
 > The `x` has the actual code point.
+
+### Enums
+
+*Enums* are encoded by their enumeration value index (the type arguments are sorted).
 
 ### NoneType (null)
 

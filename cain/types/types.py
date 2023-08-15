@@ -128,5 +128,6 @@ TYPES_REGISTRY = [
     "String",
     "Tuple",
     "Type",
-    "Union"
+    "Union",
+    "Enum"
 ]

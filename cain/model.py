@@ -14,7 +14,34 @@ class DatatypeMeta(type):
     especially when dynamically sub-classing them"""
 
     def __repr__(cls) -> str:
-        return cls().__repr__()
+        try:
+            return cls().__repr__()
+        except Exception:
+            return str(cls)
+
+    def __eq__(cls, value: "DatatypeMeta") -> bool:
+        if hasattr(cls, "__name__") or hasattr(value, "__name__"):
+            try:
+                name = cls.__name__ == value.__name__
+            except AttributeError:
+                name = False
+        else:
+            name = True
+
+        if hasattr(cls, "__args__") or hasattr(value, "__args__"):
+            try:
+                args = cls.__args__ == value.__args__
+            except AttributeError:
+                args = False
+        else:
+            args = True
+
+        return (name
+                and typing.get_type_hints(cls) == typing.get_type_hints(value)
+                and args)
+
+    def __hash__(cls) -> int:
+        return super().__hash__()
 
 
 class Datatype(metaclass=DatatypeMeta):

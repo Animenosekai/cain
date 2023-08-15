@@ -139,7 +139,7 @@ You can check if you successfully installed it by printing out its version:
 
 ```bash
 $ cain --version
-1.0
+1.1
 ```
 
 ## Usage

@@ -9,6 +9,7 @@ import cain.model as model
 import cain.errors as errors
 
 from .characters import Character
+from .enums import Enum
 from .strings import String
 from .numbers import Number, Int, Float, Double, Decimal
 from .numbers import Complex, DoubleComplex
@@ -28,6 +29,7 @@ from .objects import Object, Dict
 # from .types import Type, TYPES_REGISTRY
 
 NONE_TYPE = type(None)
+
 
 def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype],
                                          type,

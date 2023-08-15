@@ -55,13 +55,13 @@ class Datatype(metaclass=DatatypeMeta):
     __annotations__ = {}
 
     def __init__(self, value: typing.Any = None) -> None:
-        self.value = value
+        self._cain_value = value
 
     # # When calling an already instantiated object, the __init__ method is called
     # # This happens when we are giving type arguments before using the class.
     # # Example: Datatype[int, str]("hello")
     # def __call__(self, value: typing.Any, *args) -> typing.Self:
-    #     self.value = value
+    #     self._cain_value = value
     #     return self
 
     def __class_getitem__(cls, args):
@@ -185,7 +185,7 @@ class Datatype(metaclass=DatatypeMeta):
         """
         The encoded value
         """
-        return self.encode(self.value)
+        return self.encode(self._cain_value)
 
     @classmethod
     def decode(cls, value: bytes, *args) -> typing.Any:
@@ -245,15 +245,15 @@ class Datatype(metaclass=DatatypeMeta):
                 except AttributeError:
                     args_r.append(str(arg))
             result += f"[{', '.join(args_r)}]"
-        if self.value:
-            result += f"({self.value})"
+        if self._cain_value:
+            result += f"({self._cain_value})"
         return result
 
     def __str__(self) -> str:
-        return str(self.value)
+        return str(self._cain_value)
 
     def __getattr__(self, key: str):
-        return getattr(self.value, key)
+        return getattr(self._cain_value, key)
 
     def __getitem__(self, key: str):
-        return self.value[key]
+        return self._cain_value[key]

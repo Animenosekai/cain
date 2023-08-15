@@ -26,7 +26,16 @@ Schema = typing.Union[typing.Type[cain.model.Datatype], cain.model.Datatype, typ
 class Type(cain.types.Object):
     """
     Handles the encoding and decoding of types elements.
+
+    Example
+    -------
+    >>> from cain.types.types import Type
+    >>> Type.encode(str)
+    b'\x01\x03\x00\x01\x02\x00\x00\x00\x00\x1a'
+    >>> Type.decode(b'\x01\x03\x00\x01\x02\x00\x00\x00\x00\x1a')
+    String
     """
+
     index: cain.types.UInt8
     """The index of the Datatype in `TYPES_REGISTRY`"""
     name: typing.Optional[str] = None

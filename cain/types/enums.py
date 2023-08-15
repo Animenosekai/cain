@@ -25,6 +25,13 @@ from cain.model import Datatype
 class Enum(Datatype):
     """
     Handles the encoding and decoding of enums.
+
+    Example
+    -------
+    >>> Enum["hello", "world"].encode("hello")
+    b'\x00'
+    >>> Enum["hello", "world"].decode(b"\x00")
+    "hello"
     """
 
     @classmethod

@@ -27,6 +27,16 @@ from cain.model import Datatype
 class NoneType(Datatype):
     """
     Handles the encoding and decoding of arrays.
+
+    Example
+    -------
+    >>> n = NoneType(None)
+    >>> n.encoded
+    b''
+    >>> NoneType.encode(None)
+    b''
+    >>> NoneType.decode(b'')
+    None
     """
 
     @classmethod

@@ -35,6 +35,17 @@ T = typing_extensions.TypeVarTuple("T")
 class Set(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of arrays.
+
+    Example
+    -------
+    >>> Set.encode({"Hello", "world"}, str)
+    b'\x00\x02\x00\x00Hello\x00world\x00'
+    >>> Set.encode({"Hello", 1}, str, int)
+    b'\x00Hello\x00\x00\x01'
+    >>> Set.decode(b'\x00\x02\x00\x00Hello\x00world\x00', str)
+    {'Hello', 'world'}
+    >>> Set[str, int].decode(b'\x00Hello\x00\x00\x01')
+    {'Hello', 1}
     """
 
     @staticmethod

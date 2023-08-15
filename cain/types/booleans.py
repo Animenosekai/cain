@@ -26,6 +26,16 @@ from cain.model import Datatype
 class Boolean(Datatype):
     """
     Handles the encoding and decoding of booleans.
+
+    Example
+    -------
+    >>> b = Boolean(True)
+    >>> b.encoded
+    b'\x01'
+    >>> Boolean.encode(False)
+    b'\x00'
+    >>> Binary.decode(b'\x01')
+    True
     """
 
     @classmethod
@@ -40,5 +50,6 @@ class Boolean(Datatype):
         elif value.startswith(b'\x01'):
             return True, value[1:]
         raise errors.DecodingError(cls, "The given value does not seem to be a boolean")
+
 
 Bool = Boolean

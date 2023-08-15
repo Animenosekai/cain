@@ -72,6 +72,16 @@ class Number(Datatype):
 
     Represents a double precision floating point number, encoded with 64 bits (8 bytes).
     The numbers can range from -1.7e308 to +1.7e308
+
+    Example
+    -------
+    >>> n = Number(3.14)
+    >>> n.encoded
+    b'\x1f\x85\xebQ\xb8\x1e\t@'
+    >>> Number.encode(3.14)
+    b'\x1f\x85\xebQ\xb8\x1e\t@'
+    >>> Number.decode(b'\x1f\x85\xebQ\xb8\x1e\t@')
+    3.14
     """
 
     @classmethod
@@ -91,6 +101,12 @@ class Float(Number):
     Represents a single precision floating point number, encoded with 32 bits (4 bytes).
 
     The numbers can range from -3.4e38 to 3.4e38
+
+    Example
+    -------
+    >>> from cain.types import Int, Float
+    >>> Float.encode(3.14)
+    b'\xc3\xf5H@'
     """
 
     @classmethod
@@ -175,6 +191,15 @@ class Int(Number, typing.Generic[typing_extensions.Unpack[T]]):
         Adds 1 byte to the size of the integer, allowing for greater ranges (can be used multiple times)
     short
         Removes 1 byte from the size of the integer, allowing for smaller ranges (can be used multiple times)
+
+    Example
+    -------
+    >>> Int.encode(3)
+    b'\x00\x03'
+    >>> Int.encode(3, "short")
+    b'\x03'
+    >>> Int[long].encode(3)
+    b'\x00\x00\x03'
     """
 
     @staticmethod

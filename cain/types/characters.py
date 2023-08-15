@@ -39,6 +39,16 @@ from cain.model import Datatype
 class Character(Datatype):
     """
     Handles the encoding and decoding of binary blob.
+
+    Example
+    -------
+    >>> c = Character("a")
+    >>> c.encoded
+    b'a'
+    >>> Character.encode("夏")
+    b'\xe5\xa4\x8f'
+    >>> Character.decode(b'\xe5\xa4\x8f')
+    '夏'
     """
 
     @classmethod
@@ -52,7 +62,7 @@ class Character(Datatype):
                 return value[:i].decode("utf-8"), value[i:]
             except UnicodeDecodeError:
                 continue
-        
+
         # In theory, it should never come here
         # Falling back to manual decoding
         # Removing 3 bits at the right of the byte, then checking if it starts with four `1`.

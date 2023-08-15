@@ -32,6 +32,17 @@ T = typing_extensions.TypeVarTuple("T")
 class Tuple(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of tuples.
+
+    Example
+    -------
+    >>> Tuple.encode(("Hello", "world"), str)
+    b'\x00\x02\x00\x00Hello\x00world\x00'
+    >>> Tuple.encode(("Hello", 1), str, int)
+    b'\x00Hello\x00\x00\x01'
+    >>> Tuple.decode(b'\x00\x02\x00\x00Hello\x00world\x00', str)
+    ('Hello', 'world')
+    >>> Tuple[str, int].decode(b'\x00Hello\x00\x00\x01')
+    ('Hello', 1)
     """
 
     @classmethod

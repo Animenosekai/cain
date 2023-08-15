@@ -54,6 +54,10 @@ class Binary(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     >>> class A(Object):
     ...     a: Binary[LONG] # Will be able to take binary blobs as big as 1,099,511,627,776 bytes (~1100 GB) long.
     ...     b: Binary[SHORT] # Will be able to take binary blobs as big as 16,777,216 bytes (~17 MB) long.
+    >>> Binary.encode(b"Hello world")
+    b'\x00\x00\x00\x0bHello world'
+    >>> Binary.decode(b"\x00\x00\x00\x0bHello world")
+    b'Hello world'
     """
 
     @staticmethod

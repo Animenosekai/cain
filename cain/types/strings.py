@@ -27,7 +27,17 @@ from cain.model import Datatype
 
 class String(Datatype):
     """
-    Handles the encoding and decoding of binary blob.
+    Handles the encoding and decoding of strings.
+
+    Example
+    -------
+    >>> s = String("Hello world")
+    >>> s.encoded
+    b'Hello world\x00'
+    >>> String.encode("夏祭り")
+    b'\xe5\xa4\x8f\xe7\xa5\xad\xe3\x82\x8a\x00'
+    >>> String.decode(b'\xe5\xa4\x8f\xe7\xa5\xad\xe3\x82\x8a\x00')
+    '夏祭り'
     """
 
     @classmethod

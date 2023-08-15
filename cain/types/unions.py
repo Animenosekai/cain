@@ -44,6 +44,18 @@ T = typing_extensions.TypeVarTuple("T")
 class Union(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of union elements (elements which can be of different types)
+
+    Example
+    -------
+    >>> Union.encode("Hello world", str)
+    b'Hello world\x00'
+    >>> Union.encode("Hello world", str, int)
+    b'\x00Hello world\x00'
+    >>> Union[str, int].encode(2)
+    b'\x01\x00\x02'
+    >>> from cain.types.numbers import Int, short
+    >>> Union.encode(2, str, Int[short])
+    b'\x01\x02'
     """
 
     @classmethod

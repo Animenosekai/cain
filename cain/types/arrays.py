@@ -55,6 +55,13 @@ T = typing_extensions.TypeVarTuple("T")
 class Array(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of arrays.
+
+    Example
+    -------
+    >>> Array[int].encode([1, 2, 3])
+    b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03'
+    >>> Array.decode(b'\x00\x03\x00\x00\x00\x01\x00\x02\x00\x03', int)
+    [1, 2, 3]
     """
 
     @staticmethod

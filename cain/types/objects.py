@@ -57,7 +57,29 @@ from cain.model import Datatype
 
 class Object(Datatype):
     """
-    An object which handles the encoding and use of dictionaries
+    An object which handles the encoding and use of dictionaries.
+
+    Example
+    -------
+    >>> class TestObject(Object):
+    ...     username: str
+    ...     favorite_number: int
+    >>> TestObject(username="Anise", favorite_number=2)
+    TestObject({'username': 'Anise', 'favorite_number': 2})
+    >>> TestObject({"username": "Anise", "favorite_number": 2})
+    TestObject({'username': 'Anise', 'favorite_number': 2})
+    >>> TestObject({"username": "Anise"}, favorite_number=2)
+    TestObject({'username': 'Anise', 'favorite_number': 2})
+    >>> TestObject.encode({"username": "Anise", "favorite_number": 2})
+    b'\x00\x00\x00\x02Anise\x00'
+    >>> TestObject.decode(b'\x00\x00\x00\x02Anise\x00')
+    {'favorite_number': 2, 'username': 'Anise'}
+    >>> class TestObject2(Object):
+    ...     name: str
+    ...     username: str
+    ...     favorite_number: int
+    >>> TestObject2.encode({"name": "Anise", "username": "Anise", "favorite_number": 2})
+    b'\x00\x01\x00\x02\x00\x01\x00\x02Anise\x00\x00\x02'
     """
 
     def __init__(self, value: typing.Optional[dict] = None, *args, **kwargs) -> None:

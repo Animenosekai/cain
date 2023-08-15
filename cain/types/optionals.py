@@ -33,6 +33,17 @@ T = typing_extensions.TypeVarTuple("T")
 class Optional(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
     Handles the encoding and decoding of optional elements.
+
+    Example
+    -------
+    >>> Optional.encode("Hello world", str)
+    b'\x01Hello world\x00'
+    >>> Optional.decode(b'\x01Hello world\x00', str)
+    'Hello world'
+    >>> Optional.encode(None, str)
+    b'\x00'
+    >>> Optional.decode(b'\x00', str)
+    None
     """
 
     @classmethod

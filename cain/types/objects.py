@@ -66,6 +66,9 @@ class Object(Datatype):
         super().__init__(value, *args)
 
     def __getattr__(self, key: str):
+        if key == "_cain_value":
+            return super().__getattribute__("_cain_value")
+
         try:
             return super().__getattr__(key)
         except AttributeError as err:

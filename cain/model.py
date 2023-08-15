@@ -17,7 +17,13 @@ class DatatypeMeta(type):
         try:
             return cls().__repr__()
         except Exception:
-            return str(cls)
+            try:
+                return str(cls)
+            except Exception:
+                try:
+                    return cls.__name__
+                except Exception:
+                    return "Datatype(N/A)"
 
     def __eq__(cls, value: "DatatypeMeta") -> bool:
         if hasattr(cls, "__name__") or hasattr(value, "__name__"):
@@ -253,6 +259,8 @@ class Datatype(metaclass=DatatypeMeta):
         return str(self._cain_value)
 
     def __getattr__(self, key: str):
+        if key == "_cain_value":
+            return super().__getattribute__("_cain_value")
         return getattr(self._cain_value, key)
 
     def __getitem__(self, key: str):

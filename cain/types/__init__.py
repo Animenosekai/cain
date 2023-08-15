@@ -54,7 +54,7 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype],
 
     datatype = typing.get_origin(datatype) or datatype
 
-    if datatype == typing.Union:
+    if datatype is typing.Union:
         return Union, type_args
 
     if datatype is None or datatype is NONE_TYPE:

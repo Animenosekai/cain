@@ -41,6 +41,16 @@ class String(Datatype):
 
     @classmethod
     def _decode(cls, value: bytes, *args):
+        # Warning: This method only works because `characters.Character` only uses UTF-8
+        term = value.find(b"\x00")
+        if term == -1:
+            raise errors.DecodingError(cls, "Unterminated string")
+        try:
+            return value[:term].decode("utf-8"), value[term + 1:]
+        except UnicodeDecodeError:
+            pass
+
+        # Falling back to the old method
         result = ""
         for letter in value:
             if value.startswith(b"\x00"):

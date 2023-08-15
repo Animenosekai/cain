@@ -64,7 +64,7 @@ def retrieve_type(datatype: typing.Union[typing.Type[model.Datatype],
         return Range, type_args
 
     if issubclass(datatype, model.Datatype):
-        return datatype.origin, type_args
+        return datatype.__root__, type_args
 
     if issubclass(datatype, (set)) or datatype is typing.Set:
         return Set, type_args

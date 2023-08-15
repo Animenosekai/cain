@@ -25,6 +25,20 @@ class DatatypeMeta(type):
                 except Exception:
                     return "Datatype(N/A)"
 
+    @property
+    def __type_hints__(cls):
+        """Parses the type annotations for this class"""
+        try:
+            annotations, results = cls.__type_hints_cache__
+            if annotations != cls.__annotations__:
+                raise AttributeError("internal error: the annotations have changed")
+            return results
+        except AttributeError:
+            # print("__type_hints__: cache miss")
+            results = typing.get_type_hints(cls)
+            cls.__type_hints_cache__ = (cls.__annotations__, results)
+            return results
+
     def __eq__(cls, value: "DatatypeMeta") -> bool:
         if hasattr(cls, "__name__") or hasattr(value, "__name__"):
             try:
@@ -33,6 +47,14 @@ class DatatypeMeta(type):
                 name = False
         else:
             name = True
+
+        try:
+            value_type_hints = value.__type_hints__
+        except AttributeError:
+            try:
+                value_type_hints = typing.get_type_hints(value)
+            except Exception:
+                value_type_hints = {}
 
         if hasattr(cls, "__args__") or hasattr(value, "__args__"):
             try:
@@ -43,7 +65,7 @@ class DatatypeMeta(type):
             args = True
 
         return (name
-                and typing.get_type_hints(cls) == typing.get_type_hints(value)
+                and cls.__type_hints__ == value_type_hints
                 and args)
 
     def __hash__(cls) -> int:
@@ -114,7 +136,7 @@ class Datatype(metaclass=DatatypeMeta):
 
     @classmethod
     @property
-    def origin(cls):
+    def __root__(cls):
         """Returns a version of the current datatype without any arguments or type annotations"""
         class NewDatatype(cls):
             """A subclass which doesn't have any type argument"""
@@ -240,7 +262,7 @@ class Datatype(metaclass=DatatypeMeta):
             #     except AttributeError:
             #         annotations_r[key] = str(value)
             try:
-                result += f"<{typing.get_type_hints(self)}>"
+                result += f"<{self.__class__.__type_hints__}>"
             except Exception:
                 result += f"<{self.__annotations__}>"
         if self.__args__:

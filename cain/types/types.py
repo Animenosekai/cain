@@ -42,7 +42,7 @@ class Type(cain.types.Object):
     def pack(cls, value: Schema, json: bool = False):
         """Packs the given type in a dictionary"""
         datatype, type_args = cain.types.retrieve_type(value)
-        datatype_annotations = typing.get_type_hints(datatype)
+        datatype_annotations = datatype.__type_hints__
         type_name = datatype.__name__
         if issubclass(datatype, cain.types.Object):
             datatype = cain.types.Object

@@ -36,7 +36,7 @@ class Enum(Datatype):
             if arg == value:
                 return int_encoder._encode(index)
 
-        raise ValueError(f"Tried to encode value {value} which isn't in the enum {cls}")
+        raise ValueError(f"Tried to encode value `{value}` which isn't in the enum `{cls}`")
 
     @classmethod
     def _decode(cls, value: bytes, *args):

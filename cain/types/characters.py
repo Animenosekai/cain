@@ -47,6 +47,14 @@ class Character(Datatype):
 
     @classmethod
     def _decode(cls, value: bytes, *args):
+        for i in range(1, 5):
+            try:
+                return value[:i].decode("utf-8"), value[i:]
+            except UnicodeDecodeError:
+                continue
+        
+        # In theory, it should never come here
+        # Falling back to manual decoding
         # Removing 3 bits at the right of the byte, then checking if it starts with four `1`.
         if value[0] >> 3 == 0b11110:
             bytes_length = 4

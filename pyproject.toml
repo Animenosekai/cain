@@ -46,7 +46,7 @@ cain = 'cain.__main__:entry'
 "Issue Tracker" = "https://github.com/Animenosekai/cain/issues"
 
 [tool.poetry.group.dev.dependencies]
-mypy = "^1.4.1"
+mypy = "^1.5.1"
 autopep8 = "^2.0.2"
 
 [build-system]

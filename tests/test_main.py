@@ -29,7 +29,7 @@ def test_dump():
 def test_loads():
     schema = list[str, Object[{"bar": tuple[str, Optional[str], float, int]}]]
     assert (cain.loads(b'\x00foo\x00\x00\x00baz\x00\x00\x00\x00\x80?\x00\x02', schema)
-            == ['foo', {'bar': ('baz', None, 1.0, 2)}])
+            == ['foo', Object({'bar': ('baz', None, 1.0, 2)})])
 
 
 def test_load():
@@ -38,7 +38,7 @@ def test_load():
         cain.dump(['foo', {'bar': ('baz', None, 1.0, 2)}], fp, schema)
 
     with open('test.cain', 'r+b') as fp:
-        assert cain.load(fp, schema) == ['foo', {'bar': ('baz', None, 1.0, 2)}]
+        assert cain.load(fp, schema) == ['foo', Object({'bar': ('baz', None, 1.0, 2)})]
 
     # Cleanup
     Path("test.cain").unlink()

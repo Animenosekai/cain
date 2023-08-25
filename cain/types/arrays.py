@@ -112,7 +112,7 @@ class Array(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
             integer_encoder = cain.types.numbers.recommended_size(length)
 
         # This is a table containing the data and the indices where the data appears
-        results_table: dict[bytes, list[int]] = {}
+        results_table: typing.Dict[bytes, typing.List[int]] = {}
         results = []
 
         for index, (current_type, type_args) in enumerate(types):

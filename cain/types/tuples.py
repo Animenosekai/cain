@@ -46,7 +46,7 @@ class Tuple(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
     """
 
     @classmethod
-    def _encode(cls, value: tuple[typing.Any], *args):
+    def _encode(cls, value: typing.Tuple[typing.Any], *args):
         return Array._encode(value, *args)
 
     @classmethod

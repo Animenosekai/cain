@@ -43,7 +43,7 @@ class ObjectA(Object):
         h: String
         i: str
         j: list[int]
-        k: set[int]
+        k: typing.Set[int]
         l: tuple[int, str, bool]
         m: typing.Optional[str]
         n: typing.Optional[str]

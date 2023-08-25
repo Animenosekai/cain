@@ -63,7 +63,7 @@ class Set(Datatype, typing.Generic[typing_extensions.Unpack[T]]):
         return [Union[results], *other_args]
 
     @classmethod
-    def _encode(cls, value: set[typing.Any], *args):
+    def _encode(cls, value: typing.Set[typing.Any], *args):
         return Array._encode(value, *cls.preprocess_types(args))
 
     @classmethod

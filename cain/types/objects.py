@@ -108,7 +108,7 @@ class Object(Datatype):
         integer_encoder = cain.types.numbers.recommended_size(len(types))
 
         # This is a table containing the data and the indices where the data appears
-        results_table: dict[bytes, list[int]] = {}
+        results_table: typing.Dict[bytes, typing.List[int]] = {}
         results = []
 
         for index, (key, current_type) in enumerate(types):

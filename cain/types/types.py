@@ -40,11 +40,11 @@ class Type(cain.types.Object):
     """The index of the Datatype in `TYPES_REGISTRY`"""
     name: typing.Optional[str] = None
     """If changed, the name of the Datatype"""
-    annotations_keys: list[str]
+    annotations_keys: typing.List[str]
     """The keys for the annotations, in the order they appear in `annotations_values`"""
-    annotations_values: list[Type]
+    annotations_values: typing.List[Type]
     """The values for the annotations, in the order they appear in `annotations_values`"""
-    arguments: list[typing.Union[str, Type]]
+    arguments: lityping.Listst[typing.Union[str, Type]]
     """The different type arguments"""
 
     @classmethod

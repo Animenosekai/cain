@@ -44,7 +44,7 @@ class Type(cain.types.Object):
     """The keys for the annotations, in the order they appear in `annotations_values`"""
     annotations_values: typing.List[Type]
     """The values for the annotations, in the order they appear in `annotations_values`"""
-    arguments: lityping.Listst[typing.Union[str, Type]]
+    arguments: typing.list[typing.Union[str, Type]]
     """The different type arguments"""
 
     @classmethod

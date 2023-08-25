@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cain"
-version = "1.1"
+version = "1.1.1"
 description = "A small yet powerful data format ✨"
 license = "MIT"
 authors = ["Animenosekai <animenosekai.mail@gmail.com>"]

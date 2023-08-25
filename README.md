@@ -110,8 +110,7 @@ These instructions will get you a copy of the project up and running on your loc
 You will need Python 3 to use this module
 
 ```bash
-# vermin output
-Minimum required versions: 3.8
+Minimum required versions: 3.9
 Incompatible versions:     2
 ```
 
